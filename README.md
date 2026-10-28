@@ -39,7 +39,23 @@
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 
+Provenance Guard is a web application that reviews submitted writing and
+estimates whether it appears to be human-written or AI-generated. It does not
+claim to prove who wrote the text. Instead, it uses two imperfect signals and
+shows an `unsure` result when the evidence is inconclusive.
 
+When someone submits writing:
+
+1. The app receives the text and the writer's creator ID.
+2. It checks that the submission contains valid text.
+3. A model signal measures how predictable the writing is.
+4. A style signal examines sentence structure, vocabulary, and punctuation.
+5. The app combines both signals into one score.
+6. The score becomes a `human`, `unsure`, or `AI` label.
+7. The app returns the result and records the decision in an audit log.
+
+If the writer believes the result is incorrect, they can appeal it. The app
+records the appeal and marks the submission as `under_review`.
 
 ---
 
