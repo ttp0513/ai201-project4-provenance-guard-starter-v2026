@@ -71,17 +71,50 @@ records the appeal and marks the submission as `under_review`.
 
 **What it measures:**
 
+The model signal uses GPT-2 to measure the text's perplexity, or how surprising
+(or difficult) the next words are for the model to predict. Low-perplexity
+text is mapped to a higher AI score, while high-perplexity text is mapped to a
+lower AI score.
+
 **Why that might differ between human and AI writing:**
 
+AI systems often choose statistically likely words and produce smooth,
+predictable sentences. Human writing may contain more unusual word choices,
+personal expressions, and specific details.
+
 **What it can't see:**
+
+Predictability is not authorship. The signal cannot determine who actually
+wrote the text. People writing in a second language, younger writers, or anyone
+using short sentences and familiar vocabulary may receive a high AI score even
+when the work is entirely their own. Conversely, dense writing with rare or
+unusual words may receive a human-like score even if it was AI-generated.
 
 ### Signal two — the style signal
 
 **What it measures:**
 
+The style signal measures the shape of the writing rather than its meaning. It
+looks at how much sentence lengths vary, the number of unique words compared
+with the total number of words, and the amount of punctuation relative to the
+text's length. These measurements will produce a score where higher means more
+AI-like.
+
 **Why that might differ between human and AI writing:**
 
+AI-generated writing may follow more regular patterns, repeat common wording,
+or produce sentences that are too concise or unnecessarily long. Punctuation
+habits, including semicolons and em dashes, may also differ between writers.
+However, AI writing has become difficult to distinguish from human writing, so
+these patterns should be treated as supporting clues rather than proof.
+
 **What it can't see:**
+
+The style signal cannot understand whether ideas connect naturally, whether a
+phrase is necessary, or who actually wrote the text. Human writers can use the
+same punctuation and sentence patterns as AI, while someone can make AI text
+look more human by adding typos, splitting sentences, or changing punctuation.
+Text length can also affect measurements such as vocabulary variety.
 
 ### The combining rule
 
