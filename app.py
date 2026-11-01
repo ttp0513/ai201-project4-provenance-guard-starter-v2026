@@ -30,6 +30,7 @@ from flask import Flask, jsonify, request
 
 import audit
 import config
+import detector
 
 app = Flask(__name__)
 
@@ -199,17 +200,109 @@ def submit():
     what should this do when `text` is missing, empty, or enormous? A crash on
     a malformed input is one of the most common real failures there is.
     """
-    payload = request.get_json(silent=True) or {}
+    # Step 1: Read the request body as JSON. `silent=True` returns None instead
+    # of raising an exception when the caller sends malformed JSON.
+    payload = request.get_json(silent=True)
 
-    # TODO: delete this and build the route.
+    def reject(reason: str, message: str, status_code: int = 400):
+        """Log one rejected request, then return a useful JSON error."""
+        # Some bad requests do not contain a usable creator_id. The fallback
+        # keeps those requests visible in the audit log instead of losing them.
+        creator_id = "unknown"
+        if isinstance(payload, dict):
+            candidate = payload.get("creator_id")
+            if isinstance(candidate, str) and candidate.strip():
+                creator_id = candidate.strip()
+
+        # A rejection is still a security-relevant event, so record its reason.
+        audit.log_rejection(creator_id=creator_id, reason=reason)
+
+        # Flask converts this dictionary and status code into an HTTP response.
+        return jsonify({"error": reason, "message": message}), status_code
+
+    # Step 2: The route expects a JSON object such as {"text": "..."}.
+    # JSON lists, strings, numbers, malformed JSON, and missing bodies fail here.
+    if not isinstance(payload, dict):
+        return reject("invalid_json", "The request body must be a JSON object.")
+
+    # Validate the writer identifier before doing the expensive model work.
+    creator_id = payload.get("creator_id")
+    if not isinstance(creator_id, str) or not creator_id.strip():
+        return reject(
+            "invalid_creator_id",
+            "creator_id is required and must be a non-empty string.",
+        )
+    # Store a clean identifier without leading or trailing spaces.
+    creator_id = creator_id.strip()
+
+    # Validate `text` in separate checks so each error explains what went wrong.
+    if "text" not in payload:
+        return reject("missing_text", "text is required.")
+
+    text = payload.get("text")
+    if not isinstance(text, str):
+        return reject("invalid_text", "text must be a string.")
+    if not text.strip():
+        return reject("empty_text", "text must not be empty.")
+
+    # Criterion 5 treats a 50,000-word submission as oversized. HTTP 413 means
+    # "Content Too Large" and distinguishes this from an ordinary bad request.
+    if len(text.split()) >= 50_000:
+        return reject(
+            "text_too_large",
+            "text must contain fewer than 50,000 words.",
+            413,
+        )
+
+    # Step 3: Run signal one. This is the expensive local GPT-2 calculation.
+    # Its result is a 0-1 score where a higher value appears more AI-like.
+    try:
+        model_score = detector.model_signal(text)
+    except ValueError as exc:
+        # detector.py raises ValueError when there are too few tokens to score.
+        return reject("text_too_short", str(exc))
+    except detector.DetectorUnavailable:
+        # A missing model is a service problem (503), not a caller mistake.
+        return jsonify({
+            "error": "detector_unavailable",
+            "message": "The local detector model is unavailable.",
+        }), 503
+
+    # Step 4: Give this submission a unique ID. The future appeal route uses
+    # this same ID to find the original decision in the audit log.
+    content_id = str(uuid.uuid4())
+
+    # Milestone 3 uses only the model signal. These neutral placeholders are
+    # replaced by real style, combined-score, and label values in milestones
+    # 4 and 5.
+    guess = "pending"
+    confidence = 0.0
+    label = "Pending style analysis and final scoring."
+    style_score = 0.5
+
+    # Step 5: Write the decision before returning it. If the caller later
+    # appeals, both events can be connected through `content_id`.
+    audit.log_decision(
+        content_id=content_id,
+        creator_id=creator_id,
+        guess=guess,
+        model_score=model_score,
+        style_score=style_score,
+        combined_score=None,
+        label=label,
+        status="decided",
+    )
+
+    # Step 6: Return JSON to the caller. Flask supplies HTTP 200 because this
+    # successful response does not specify a different status code.
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /submit isn't built yet — see the TODO in app.py.",
-        "you_sent": {
-            "text_length": len(payload.get("text", "")),
-            "creator_id": payload.get("creator_id"),
-        },
-    }), 501
+        "content_id": content_id,
+        "guess": guess,
+        "confidence": confidence,
+        "label": label,
+        "model_score": model_score,
+        "style_score": style_score,
+    })
 
 
 @app.post("/appeal")
