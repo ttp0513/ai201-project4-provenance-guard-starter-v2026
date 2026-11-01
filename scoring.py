@@ -52,11 +52,22 @@ def combine_signals(model_score: float, style_score: float) -> float:
     The weights in config.py are placeholders. Change them, or ignore them and
     write a different rule.
     """
-    # TODO: replace this
-    return (
+    if not 0.0 <= model_score <= 1.0:
+        raise ValueError("model_score must be between 0.0 and 1.0")
+    if not 0.0 <= style_score <= 1.0:
+        raise ValueError("style_score must be between 0.0 and 1.0")
+
+    total_weight = config.WEIGHT_MODEL_SIGNAL + config.WEIGHT_STYLE_SIGNAL
+    if total_weight <= 0:
+        raise ValueError("signal weights must add up to more than zero")
+
+    # Equal weights make strong disagreement move toward 0.5, which is the
+    # unsure band instead of a confident result from one imperfect signal.
+    score = (
         config.WEIGHT_MODEL_SIGNAL * model_score
         + config.WEIGHT_STYLE_SIGNAL * style_score
-    )
+    ) / total_weight
+    return round(min(max(score, 0.0), 1.0), 4)
 
 
 def score_to_label(score: float) -> tuple[str, str]:

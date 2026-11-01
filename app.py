@@ -31,6 +31,8 @@ from flask import Flask, jsonify, request
 import audit
 import config
 import detector
+import scoring
+import stylometry
 
 app = Flask(__name__)
 
@@ -268,19 +270,21 @@ def submit():
             "message": "The local detector model is unavailable.",
         }), 503
 
-    # Step 4: Give this submission a unique ID. The future appeal route uses
+    # Step 4: Run signal two and combine both 0-1 scores.
+    style_score = stylometry.style_signal(text)
+    combined_score = scoring.combine_signals(model_score, style_score)
+
+    # Step 5: Give this submission a unique ID. The future appeal route uses
     # this same ID to find the original decision in the audit log.
     content_id = str(uuid.uuid4())
 
-    # Milestone 3 uses only the model signal. These neutral placeholders are
-    # replaced by real style, combined-score, and label values in milestones
-    # 4 and 5.
+    # Milestone 4 now has real signal and combined scores. The final guess and
+    # reader-facing label are still placeholders until Milestone 5.
     guess = "pending"
-    confidence = 0.0
-    label = "Pending style analysis and final scoring."
-    style_score = 0.5
+    label = "Pending final label mapping."
+    confidence = combined_score
 
-    # Step 5: Write the decision before returning it. If the caller later
+    # Step 6: Write the decision before returning it. If the caller later
     # appeals, both events can be connected through `content_id`.
     audit.log_decision(
         content_id=content_id,
@@ -288,12 +292,12 @@ def submit():
         guess=guess,
         model_score=model_score,
         style_score=style_score,
-        combined_score=None,
+        combined_score=combined_score,
         label=label,
         status="decided",
     )
 
-    # Step 6: Return JSON to the caller. Flask supplies HTTP 200 because this
+    # Step 7: Return JSON to the caller. Flask supplies HTTP 200 because this
     # successful response does not specify a different status code.
     return jsonify({
         "content_id": content_id,
