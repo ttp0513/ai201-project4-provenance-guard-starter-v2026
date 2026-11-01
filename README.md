@@ -39,10 +39,10 @@
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 
-Provenance Guard is a web application that reviews submitted writing and
-estimates whether it appears to be human-written or AI-generated. It does not
-claim to prove who wrote the text. Instead, it uses two imperfect signals and
-shows an `unsure` result when the evidence is inconclusive.
+Provenance Guard is a web service that looks at submitted writing and estimates
+whether it looks human-written or AI-generated. It cannot prove who wrote the
+text. It uses two signals and returns `unsure` when they do not give a clear
+answer.
 
 When someone submits writing:
 
@@ -71,50 +71,46 @@ records the appeal and marks the submission as `under_review`.
 
 **What it measures:**
 
-The model signal uses GPT-2 to measure the text's perplexity, or how surprising
-(or difficult) the next words are for the model to predict. Low-perplexity
-text is mapped to a higher AI score, while high-perplexity text is mapped to a
-lower AI score.
+The model signal asks GPT-2 how easy the next words were to predict. This is
+called perplexity. Text that is easier to predict gets a higher AI score, and
+text that is more surprising gets a lower AI score.
 
 **Why that might differ between human and AI writing:**
 
-AI systems often choose statistically likely words and produce smooth,
-predictable sentences. Human writing may contain more unusual word choices,
-personal expressions, and specific details.
+AI often chooses likely next words, so its writing can be easier for another
+model to predict. Human writing may include more personal details, unusual
+words, or sudden changes.
 
 **What it can't see:**
 
-Predictability is not authorship. The signal cannot determine who actually
-wrote the text. People writing in a second language, younger writers, or anyone
-using short sentences and familiar vocabulary may receive a high AI score even
-when the work is entirely their own. Conversely, dense writing with rare or
-unusual words may receive a human-like score even if it was AI-generated.
+This signal does not know who wrote the text. A person writing in a second
+language, a younger writer, or anyone using simple words may get a high AI
+score. AI text with rare words may also get a human-like score.
 
 ### Signal two — the style signal
 
 **What it measures:**
 
-The style signal measures the shape of the writing rather than its meaning. It
-looks at how much sentence lengths vary, the number of unique words compared
-with the total number of words, and the amount of punctuation relative to the
-text's length. These measurements will produce a score where higher means more
-AI-like.
+The style signal looks at the shape of the writing, not its meaning. It checks
+sentence-length changes, the amount of unique words, and punctuation. A higher
+result means the style looks more AI-like.
+
+Within the style score, sentence-length variation contributes 50%, vocabulary
+variety contributes 35%, and punctuation density contributes 15%. Punctuation
+has the smallest influence because it is especially easy to add or remove.
 
 **Why that might differ between human and AI writing:**
 
-AI-generated writing may follow more regular patterns, repeat common wording,
-or produce sentences that are too concise or unnecessarily long. Punctuation
-habits, including semicolons and em dashes, may also differ between writers.
-However, AI writing has become difficult to distinguish from human writing, so
-these patterns should be treated as supporting clues rather than proof.
+AI writing may repeat words or follow more regular patterns. It can also use
+sentences that are very short or longer than needed. These are only clues
+because current AI writing can look a lot like human writing.
 
 **What it can't see:**
 
-The style signal cannot understand whether ideas connect naturally, whether a
-phrase is necessary, or who actually wrote the text. Human writers can use the
-same punctuation and sentence patterns as AI, while someone can make AI text
-look more human by adding typos, splitting sentences, or changing punctuation.
-Text length can also affect measurements such as vocabulary variety.
+The style signal cannot tell if ideas connect well or if a phrase is needed. It
+also cannot identify the real writer. Someone can change the score by adding
+typos, splitting sentences, or changing punctuation without changing the main
+message. Text length can also change the vocabulary score.
 
 ### The combining rule
 
@@ -123,7 +119,15 @@ Text length can also affect measurements such as vocabulary variety.
 
 **The rule:**
 
+I average the model score and style score. A higher result means more AI-like.
+If the signals disagree, the average moves closer to `unsure` instead of
+letting one signal decide everything.
+
 **The numbers:**
+
+The model signal contributes 50% and the style signal contributes 50%. Scores
+from `0.00` through `0.35` are labelled human, scores above `0.35` and below
+`0.65` are unsure, and scores from `0.65` through `1.00` are labelled AI.
 
 **Where it lives:** `scoring.py::combine_signals`
 
@@ -132,6 +136,10 @@ Text length can also affect measurements such as vocabulary variety.
 
 **A case where my two signals split, and what my rule does with it:**
 
+A plain human paragraph beginning "I went to the store" got a model score of
+`0.7858` and a style score of `0.4798`. The final score was `0.6328`, so the
+result was `unsure` instead of AI. This is what I wanted when the signals do not
+agree.
 
 
 ---
@@ -145,15 +153,17 @@ Text length can also affect measurements such as vocabulary variety.
 
 | Label | Score range | The exact text a reader sees |
 |---|---|---|
-| high-confidence human |  |  |
-| unsure |  |  |
-| high-confidence AI |  |  |
+| high-confidence human | 0.00-0.35, inclusive | This writing appears likely to have been written by a person, but this result is not proof of authorship. |
+| unsure | above 0.35 and below 0.65 | The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI. |
+| high-confidence AI | 0.65-1.00, inclusive | This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person. |
 
 **Why I worded the "unsure" one this way:**
 <!-- It's the hardest of the three. It has to admit uncertainty without
      sounding like an accusation, because the person reading it may well have
      written every word themselves. -->
 
+I used this wording because the system does not have a clear answer. It avoids
+accusing the writer when the signals are uncertain.
 
 
 ---
@@ -173,11 +183,18 @@ Text length can also affect measurements such as vocabulary variety.
 ```bash
 $ curl -X POST http://127.0.0.1:5000/submit \
   -H "Content-Type: application/json" \
-  -d '{"text": "...", "creator_id": "..."}'
+  -d '{"text":"Meet the RoamCup: a double-wall insulated travel mug that actually keeps up with your day. Coffee stays piping hot during morning commutes, while the leak-proof lid and ergonomic grip mean fewer spills and more sips. Toss it in your bag and go.","creator_id":"john_human"}'
 ```
 
 ```json
-
+{
+  "confidence": 0.2667,
+  "content_id": "7a32d5fd-60ac-4ae3-b705-bd2b5bf1b613",
+  "guess": "human",
+  "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+  "model_score": 0.3403,
+  "style_score": 0.1931
+}
 ```
 
 **An appeal**
@@ -185,21 +202,48 @@ $ curl -X POST http://127.0.0.1:5000/submit \
 ```bash
 $ curl -X POST http://127.0.0.1:5000/appeal \
   -H "Content-Type: application/json" \
-  -d '{"content_id": "...", "reasoning": "..."}'
+  -d '{"content_id":"7a32d5fd-60ac-4ae3-b705-bd2b5bf1b613","reasoning":"I wrote this sample and want a person to review the result."}'
 ```
 
 ```json
-
+{
+  "content_id": "7a32d5fd-60ac-4ae3-b705-bd2b5bf1b613",
+  "message": "Your appeal was recorded and is awaiting human review.",
+  "status": "under_review"
+}
 ```
 
 **What the log shows afterwards**
 
 ```bash
-$ curl "http://127.0.0.1:5000/log?limit=3"
+$ curl "http://127.0.0.1:5000/log?limit=2"
 ```
 
 ```json
-
+{
+  "count": 2,
+  "entries": [
+    {
+      "combined_score": 0.2667,
+      "content_id": "7a32d5fd-60ac-4ae3-b705-bd2b5bf1b613",
+      "creator_id": "john_human",
+      "guess": "human",
+      "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+      "model_score": 0.3403,
+      "status": "decided",
+      "style_score": 0.1931,
+      "timestamp": "2026-11-01T23:03:38+00:00"
+    },
+    {
+      "content_id": "7a32d5fd-60ac-4ae3-b705-bd2b5bf1b613",
+      "creator_id": "john_human",
+      "event": "appeal",
+      "reasoning": "I wrote this sample and want a person to review the result.",
+      "status": "under_review",
+      "timestamp": "2026-11-01T23:03:53+00:00"
+    }
+  ]
+}
 ```
 
 ---
@@ -208,15 +252,34 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I used AI as an instructor and requirements reviewer. I
+  asked it to explain the request flow, identify fairness risks, and help turn
+  my goals into five measurable acceptance criteria.
+- *What came back:* It explained the two signals, suggested test targets, and
+  showed how false positives, score spread, appeals, labels, and bad input
+  could be measured.
+- *What I changed:* I did not accept every suggestion. I questioned arbitrary
+  targets, caught that AUC measures ranking rather than score distance, and
+  tied my final numbers to the required three trials, label thresholds, and
+  test cases already provided by the starter. This helped me use AI output as
+  a draft to evaluate instead of an answer to copy.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I used AI as a pair programmer for the Flask routes,
+  stylometry functions, scoring rule, labels, audit logging, and appeal flow. I
+  also asked for beginner-friendly comments and tests for each stage.
+- *What came back:* It produced implementation drafts, edge-case checks, test
+  commands, and explanations of how the files connect.
+- *What I changed:* I made punctuation only 15% of the style score because it
+  is easy to manipulate, and I used equal signal weights so disagreement moves
+  toward `unsure`. I tested the signals separately, checked all three label
+  boundaries, ran real API requests, inspected the audit log, and kept the
+  commits separated by milestone. My own AI-labelled sample returned `unsure`,
+  which showed me why model output needs human review instead of blind trust.
+
+AI helped me move faster, but I stayed responsible for the requirements,
+design choices, testing, and final explanation.
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
