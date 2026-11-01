@@ -18,8 +18,8 @@ doesn't, it's the service itself.
 Routes:
 
     POST /ping        the worked example. Already works. Don't edit it
-    POST /submit      ← YOU BUILD THIS (Milestone 3, 4, 5)
-    POST /appeal      ← YOU BUILD THIS (Milestone 5)
+    POST /submit      score, label, log, and answer
+    POST /appeal      record a request for human review
     GET  /log         the audit log. Already works
     GET  /health      is the service up, and is the model loaded
 """
@@ -151,14 +151,13 @@ def health():
     })
 
 
-# ── YOU BUILD THIS ────────────────────────────────────────────────────────────
+# ── Submission and appeal routes ─────────────────────────────────────────────
 
 @app.post("/submit")
 # @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
 def submit():
     """
-    Take a piece of text, decide about it, log the decision, answer.
-    ← TODO — Milestones 3, 4 and 5
+    Take a piece of text, decide about it, log the decision, and answer.
 
     Expects JSON:
         {"text": "...", "creator_id": "..."}
@@ -270,21 +269,20 @@ def submit():
             "message": "The local detector model is unavailable.",
         }), 503
 
-    # Step 4: Run signal two and combine both 0-1 scores.
+    # Step 4: Run signal two, then combine both 0-1 scores. Equal configured
+    # weights make disagreement move toward the unsure band around 0.5.
     style_score = stylometry.style_signal(text)
     combined_score = scoring.combine_signals(model_score, style_score)
 
-    # Step 5: Give this submission a unique ID. The future appeal route uses
-    # this same ID to find the original decision in the audit log.
+    # Step 5: Convert the number into a machine-readable guess and a sentence
+    # that explains the result to a writer without claiming proof.
+    guess, label = scoring.score_to_label(combined_score)
+
+    # Step 6: Give this submission a unique ID. The appeal route uses this same
+    # ID to find the original decision in the audit log.
     content_id = str(uuid.uuid4())
 
-    # Milestone 4 now has real signal and combined scores. The final guess and
-    # reader-facing label are still placeholders until Milestone 5.
-    guess = "pending"
-    label = "Pending final label mapping."
-    confidence = combined_score
-
-    # Step 6: Write the decision before returning it. If the caller later
+    # Step 7: Write the decision before returning it. If the caller later
     # appeals, both events can be connected through `content_id`.
     audit.log_decision(
         content_id=content_id,
@@ -297,8 +295,10 @@ def submit():
         status="decided",
     )
 
-    # Step 7: Return JSON to the caller. Flask supplies HTTP 200 because this
-    # successful response does not specify a different status code.
+    # Step 8: Return JSON to the caller. `confidence` is the combined 0-1 score
+    # expected by the evaluation tools: lower is human-like, higher is AI-like.
+    # Flask supplies HTTP 200 because no different status code is specified.
+    confidence = combined_score
     return jsonify({
         "content_id": content_id,
         "guess": guess,
@@ -312,7 +312,7 @@ def submit():
 @app.post("/appeal")
 def appeal():
     """
-    A writer says you got it wrong. ← TODO — Milestone 5
+    A writer says the system got the decision wrong.
 
     Expects JSON:
         {"content_id": "...", "reasoning": "..."}
@@ -329,14 +329,56 @@ def appeal():
     to the person on the other end. It's the only thing standing between a
     wrong accusation and nothing at all.
     """
-    payload = request.get_json(silent=True) or {}
+    # Read and validate the appeal separately from /submit. A malformed appeal
+    # should produce a useful 4xx response, not a server error.
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({
+            "error": "invalid_json",
+            "message": "The request body must be a JSON object.",
+        }), 400
 
-    # TODO: delete this and build the route.
+    content_id = payload.get("content_id")
+    if not isinstance(content_id, str) or not content_id.strip():
+        return jsonify({
+            "error": "invalid_content_id",
+            "message": "content_id is required and must be a non-empty string.",
+        }), 400
+    content_id = content_id.strip()
+
+    reasoning = payload.get("reasoning")
+    if not isinstance(reasoning, str) or not reasoning.strip():
+        return jsonify({
+            "error": "invalid_reasoning",
+            "message": "reasoning is required and must be a non-empty string.",
+        }), 400
+    reasoning = reasoning.strip()
+
+    # An appeal is valid only when its ID belongs to an existing decision.
+    entries = audit.entries_for(content_id)
+    decision = next(
+        (entry for entry in entries if entry.get("status") == "decided"),
+        None,
+    )
+    if decision is None:
+        return jsonify({
+            "error": "content_not_found",
+            "message": "No submission was found for that content_id.",
+        }), 404
+
+    # Append the appeal rather than replacing the original decision. This
+    # preserves the full history and moves the item to human review.
+    appeal_entry = audit.log_appeal(
+        content_id=content_id,
+        creator_id=decision.get("creator_id", "unknown"),
+        reasoning=reasoning,
+    )
+
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /appeal isn't built yet — see the TODO in app.py.",
-        "you_sent": payload,
-    }), 501
+        "content_id": content_id,
+        "status": appeal_entry["status"],
+        "message": "Your appeal was recorded and is awaiting human review.",
+    })
 
 
 # ── Already works ─────────────────────────────────────────────────────────────

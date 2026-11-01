@@ -1,8 +1,9 @@
 """
 Turning two numbers into one, and one number into something a person can read.
-← YOU BUILD THIS IN MILESTONES 4 AND 5
+Implemented in Milestones 4 and 5.
 
-Two functions live here, and both are stubs.
+Two functions live here: one combines signals and one creates reader-facing
+labels.
 
 `combine_signals` is where your false-positive decision from Milestone 1
 actually gets made. Everything above it — the labels, the appeal path — is
@@ -21,7 +22,7 @@ import config
 
 def combine_signals(model_score: float, style_score: float) -> float:
     """
-    Combine two 0–1 signals into one 0–1 score. ← TODO (Milestone 4)
+    Combine two 0–1 signals into one 0–1 score.
 
     Both inputs point the same way: higher means more likely AI. Your output
     should too.
@@ -49,8 +50,7 @@ def combine_signals(model_score: float, style_score: float) -> float:
       - Milestone 4 asks you to find a case where your two signals split and
         write it down. That case is what this rule exists to handle.
 
-    The weights in config.py are placeholders. Change them, or ignore them and
-    write a different rule.
+    The chosen equal weights live in config.py and are documented in README.md.
     """
     if not 0.0 <= model_score <= 1.0:
         raise ValueError("model_score must be between 0.0 and 1.0")
@@ -61,8 +61,9 @@ def combine_signals(model_score: float, style_score: float) -> float:
     if total_weight <= 0:
         raise ValueError("signal weights must add up to more than zero")
 
-    # Equal weights make strong disagreement move toward 0.5, which is the
-    # unsure band instead of a confident result from one imperfect signal.
+    # Equal default weights make strong disagreement move toward 0.5, which is
+    # the unsure band instead of a confident accusation. Dividing by the total
+    # also keeps the rule valid if the configured weights do not add to 1.0.
     score = (
         config.WEIGHT_MODEL_SIGNAL * model_score
         + config.WEIGHT_STYLE_SIGNAL * style_score
@@ -73,7 +74,6 @@ def combine_signals(model_score: float, style_score: float) -> float:
 def score_to_label(score: float) -> tuple[str, str]:
     """
     Turn a score into a guess and the text a reader actually sees.
-    ← TODO (Milestone 5)
 
     Returns:
         (guess, label_text) — where `guess` is a short machine-readable string
@@ -96,12 +96,26 @@ def score_to_label(score: float) -> tuple[str, str]:
     think if they got it on their own work. That question is the whole
     milestone.
     """
-    # TODO: replace this — thresholds are in config.py
+    if not 0.0 <= score <= 1.0:
+        raise ValueError("score must be between 0.0 and 1.0")
+
     if score >= config.AI_THRESHOLD:
-        return "ai", "PLACEHOLDER — write the high-confidence AI label."
+        return (
+            "ai",
+            "This writing shows patterns associated with AI-generated text. "
+            "This result is not proof and should be reviewed by a person.",
+        )
     if score <= config.HUMAN_THRESHOLD:
-        return "human", "PLACEHOLDER — write the high-confidence human label."
-    return "unsure", "PLACEHOLDER — write the unsure label."
+        return (
+            "human",
+            "This writing appears likely to have been written by a person, "
+            "but this result is not proof of authorship.",
+        )
+    return (
+        "unsure",
+        "The signals are inconclusive, so we cannot determine whether this "
+        "writing was produced by a person or AI.",
+    )
 
 
 def label_ranges() -> list[tuple[str, str]]:
@@ -110,7 +124,16 @@ def label_ranges() -> list[tuple[str, str]]:
     label text — given to you so the numbers can't drift apart from config.py.
     """
     return [
-        ("high-confidence human", f"0.00 – {config.HUMAN_THRESHOLD:.2f}"),
-        ("unsure", f"{config.HUMAN_THRESHOLD:.2f} – {config.AI_THRESHOLD:.2f}"),
-        ("high-confidence AI", f"{config.AI_THRESHOLD:.2f} – 1.00"),
+        (
+            "high-confidence human",
+            f"0.00 – {config.HUMAN_THRESHOLD:.2f} (inclusive)",
+        ),
+        (
+            "unsure",
+            f"above {config.HUMAN_THRESHOLD:.2f} and below {config.AI_THRESHOLD:.2f}",
+        ),
+        (
+            "high-confidence AI",
+            f"{config.AI_THRESHOLD:.2f} – 1.00 (inclusive)",
+        ),
     ]
