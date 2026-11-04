@@ -123,6 +123,26 @@ def punctuation_density(text: str) -> float:
 
 # ── Combining them ───────────────────────────────────────────────────────────
 
+def ai_likeness_values(text: str) -> dict[str, float]:
+    """Convert the three raw measures to comparable 0-1 AI-ish values."""
+    def clamp(value: float) -> float:
+        """Keep a normalized measure inside the shared 0-1 range."""
+        return min(max(value, 0.0), 1.0)
+
+    spread = sentence_length_spread(text)
+    vocabulary = type_token_ratio(text)
+    punctuation = punctuation_density(text)
+
+    # Low sentence variation and low vocabulary variety are treated as more
+    # AI-like. More punctuation lowers the AI-like value. These are the same
+    # conversions used to calculate the final style signal below.
+    return {
+        "sentence_length_spread": 1.0 - clamp(spread / 0.60),
+        "type_token_ratio": 1.0 - clamp((vocabulary - 0.45) / 0.35),
+        "punctuation_density": 1.0 - clamp(punctuation / 0.08),
+    }
+
+
 def style_signal(text: str) -> float:
     """
     The style signal as a 0–1 score. **Higher means more likely AI.**
@@ -145,28 +165,15 @@ def style_signal(text: str) -> float:
     you trust it. Plain and ordinary, not formal: formal prose reads as *human*
     to signal one, and it is plain writing that gets accused.
     """
-    def clamp(value: float) -> float:
-        """Keep a normalized measure inside the shared 0-1 range."""
-        return min(max(value, 0.0), 1.0)
-
-    spread = sentence_length_spread(text)
-    vocabulary = type_token_ratio(text)
-    punctuation = punctuation_density(text)
-
     # Each raw measure uses a different scale, so normalize it before mixing.
-    # Low sentence variation and low vocabulary variety are treated as more
-    # AI-like. More punctuation lowers the AI-like score, but punctuation is
-    # deliberately weak because it is easy to add or remove.
-    spread_ai = 1.0 - clamp(spread / 0.60)
-    vocabulary_ai = 1.0 - clamp((vocabulary - 0.45) / 0.35)
-    punctuation_ai = 1.0 - clamp(punctuation / 0.08)
+    ai_values = ai_likeness_values(text)
 
     score = (
-        0.50 * spread_ai
-        + 0.35 * vocabulary_ai
-        + 0.15 * punctuation_ai
+        0.50 * ai_values["sentence_length_spread"]
+        + 0.35 * ai_values["type_token_ratio"]
+        + 0.15 * ai_values["punctuation_density"]
     )
-    return round(clamp(score), 4)
+    return round(min(max(score, 0.0), 1.0), 4)
 
 
 if __name__ == "__main__":
@@ -177,9 +184,18 @@ if __name__ == "__main__":
         "good results. Users generally find it easy to use and understand."
     )
 
+    raw_values = {
+        "sentence_length_spread": sentence_length_spread(text),
+        "type_token_ratio": type_token_ratio(text),
+        "punctuation_density": punctuation_density(text),
+    }
+    ai_values = ai_likeness_values(text)
+
     print(f"{len(sentences(text))} sentences, {len(words(text))} words\n")
-    print(f"sentence_length_spread   {sentence_length_spread(text)}")
-    print(f"type_token_ratio         {type_token_ratio(text)}")
-    print(f"punctuation_density      {punctuation_density(text)}")
-    print(f"style_signal             {style_signal(text)}   (higher = more likely AI)")
-    print("\nThe measures are normalized inside style_signal before combining.")
+    for name, raw_value in raw_values.items():
+        print(f"{name:<25} {raw_value:.4f}  -> AI-ish {ai_values[name]:.4f}")
+
+    print(
+        f"\nstyle_signal             {style_signal(text):.4f}"
+        "   (higher = more likely AI)"
+    )
