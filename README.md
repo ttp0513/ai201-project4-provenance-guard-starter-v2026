@@ -287,9 +287,17 @@ design choices, testing, and final explanation.
 
 ## Rate Limiting
 
-**My limits:** ___ per minute, ___ per day
+**My limits:** 6 submissions per minute, 100 submissions per day
 
 **Why those numbers and not others:**
+I assumed that each `creator_id` represents one individual writer. Six
+submissions per minute gives a writer room to correct and resubmit their work,
+but it slows down a script that sends many versions quickly to study the
+detector. A limit of 100 per day still allows frequent use while preventing one
+creator from sending hundreds or thousands of submissions. In a real system, I
+would review normal usage data and adjust these limits if legitimate users were
+being blocked.
+
 <!-- Think about two people: a real writer submitting their own work a few
      times an hour, and a script sending a thousand variations to map your
      thresholds. Your numbers have to be liveable for the first and hostile to
@@ -299,11 +307,38 @@ design choices, testing, and final explanation.
 differently — one script can look like a thousand callers, and one household
 can look like one. -->
 
+The service counts each creator_id as one caller and uses the IP address when a valid ID is missing. I chose creator_id because different writers may share the same household or school network, and an IP-only limit could block them together. However, the service does not verify the ID, so an attacker can avoid the limit by changing it. In a real system, I would use an authenticated account or API key and combine per-account and per-IP limits.
+
 **The run of status codes when I pushed past it:**
 
 <!-- python run_attacks.py --flood 15 -->
 
 ```
+>> python run_attacks.py --flood 15
+15 submissions as 'flood_tester' against http://127.0.0.1:5000
+The first one is slow while the model loads.
+
+  [ 1/15] 200
+  [ 2/15] 200
+  [ 3/15] 200
+  [ 4/15] 200
+  [ 5/15] 200
+  [ 6/15] 200
+  [ 7/15] 429
+  [ 8/15] 429
+  [ 9/15] 429
+  [10/15] 429
+  [11/15] 429
+  [12/15] 429
+  [13/15] 429
+  [14/15] 429
+  [15/15] 429
+
+============================================================
+200 200 200 200 200 200 429 429 429 429 429 429 429 429 429
+============================================================
+
+9 of 15 were rate limited.
 
 ```
 
