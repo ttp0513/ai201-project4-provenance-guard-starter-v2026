@@ -349,20 +349,95 @@ The first one is slow while the model loads.
 <!-- Every attack with its outcome and a held-or-broke mark.
      `run_attacks.py --label before` produces the table. -->
 
+I treated `unsure` as a cautious result rather than an accusation or a claim
+that the text was human. With that rule, 42 attacks were held and 14 broke the
+system. The complete raw report is in
+`results/attack_run_2026-11-04_1947_before.md`.
 
+| ID | Family | Targeting | Status | Guess | Score | Verdict |
+|---|---|---|---|---|---|---|
+| EV01 | evasion | typos raise word variety | 200 | human | 0.324 | BROKE |
+| EV02 | evasion | broken-up sentences raise length spread | 200 | human | 0.350 | BROKE |
+| EV03 | evasion | a pasted quotation changes the shape | 200 | unsure | 0.449 | HELD |
+| EV04 | evasion | unusual words raise perplexity | 200 | unsure | 0.541 | HELD |
+| EV05 | evasion | heavy human editing pass | 200 | human | 0.223 | BROKE |
+| EV06 | evasion | one very long sentence and one very short | 200 | unsure | 0.375 | HELD |
+| EV07 | evasion | padding with punctuation | 200 | unsure | 0.603 | HELD |
+| EV08 | evasion | text below the token window | 200 | human | 0.301 | BROKE |
+| EV09 | evasion | AI text with a human opening paragraph | 200 | unsure | 0.460 | HELD |
+| EV10 | evasion | repeated stanza structure | 200 | ai | 0.820 | HELD |
+| FP01 | false positive | plain human writing | 200 | unsure | 0.471 | HELD |
+| FP02 | false positive | formal human writing | 200 | unsure | 0.623 | HELD |
+| FP03 | false positive | non-native English speaker | 200 | unsure | 0.614 | HELD |
+| FP04 | false positive | student essay written to a rubric | 200 | unsure | 0.570 | HELD |
+| FP05 | false positive | human technical documentation | 200 | ai | 0.696 | BROKE |
+| FP06 | false positive | person imitating a formal template | 200 | unsure | 0.564 | HELD |
+| FP07 | false positive | deliberate phrase repetition | 200 | ai | 0.662 | BROKE |
+| FP08 | false positive | short genuine human submission | 200 | human | 0.231 | HELD |
+| PI01 | prompt injection | instruction to ignore the check | 200 | human | 0.292 | BROKE |
+| PI02 | prompt injection | disguised system message | 200 | human | 0.148 | BROKE |
+| PI03 | prompt injection | instruction in writer's voice | 200 | unsure | 0.462 | HELD |
+| PI04 | prompt injection | hostile label text | 200 | unsure | 0.352 | HELD |
+| PI05 | prompt injection | audit-log injection | 200 | unsure | 0.374 | HELD |
+| PI06 | prompt injection | instruction plus human text | 200 | unsure | 0.447 | HELD |
+| MF01 | malformed | whitespace only | 400 | — | — | HELD |
+| MF02 | malformed | single character | 400 | — | — | HELD |
+| MF03 | malformed | control characters | 200 | human | 0.250 | BROKE |
+| MF04 | malformed | punctuation only | 200 | unsure | 0.431 | BROKE |
+| MF05 | malformed | very long single word | 200 | ai | 0.824 | BROKE |
+| MF06 | malformed | emoji only | 200 | ai | 0.923 | BROKE |
+| MF07 | malformed | right-to-left script | 200 | ai | 0.944 | BROKE |
+| MF08 | malformed | 60,000 characters | 200 | ai | 0.797 | BROKE |
+| RQ01 | malformed request | no text field | 400 | — | — | HELD |
+| RQ02 | malformed request | no creator ID | 400 | — | — | HELD |
+| RQ03 | malformed request | text is a number | 400 | — | — | HELD |
+| RQ04 | malformed request | text is a list | 400 | — | — | HELD |
+| RQ05 | malformed request | text is null | 400 | — | — | HELD |
+| RQ06 | malformed request | creator ID is an object | 400 | — | — | HELD |
+| RQ07 | malformed request | body is a JSON array | 400 | — | — | HELD |
+| RQ08 | malformed request | unparseable JSON | 400 | — | — | HELD |
+| RQ09 | malformed request | empty body | 400 | — | — | HELD |
+| RQ10 | malformed request | form-encoded body | 400 | — | — | HELD |
+| RQ11 | malformed request | JSON sent as plain text | 429 | — | — | HELD |
+| RQ12 | malformed request | deeply nested JSON | 400 | — | — | HELD |
+| FL01_01 | flood | request 1 from one creator | 200 | human | 0.322 | HELD |
+| FL01_02 | flood | request 2 from one creator | 200 | human | 0.322 | HELD |
+| FL01_03 | flood | request 3 from one creator | 200 | human | 0.322 | HELD |
+| FL01_04 | flood | request 4 from one creator | 200 | human | 0.322 | HELD |
+| FL01_05 | flood | request 5 from one creator | 200 | human | 0.322 | HELD |
+| FL01_06 | flood | request 6 from one creator | 200 | human | 0.322 | HELD |
+| FL01_07 | flood | request 7 from one creator | 429 | — | — | HELD |
+| FL01_08 | flood | request 8 from one creator | 429 | — | — | HELD |
+| FL01_09 | flood | request 9 from one creator | 429 | — | — | HELD |
+| FL01_10 | flood | request 10 from one creator | 429 | — | — | HELD |
+| FL01_11 | flood | request 11 from one creator | 429 | — | — | HELD |
+| FL01_12 | flood | request 12 from one creator | 429 | — | — | HELD |
 
 **Ten audit log entries from the run**
 
 <!-- Choose entries that show the interesting failures, not the ten easiest. -->
 
 ```json
-
+{"timestamp":"2026-11-05T00:46:59+00:00","content_id":"f17a44ef-089c-4a2e-b789-35c2eded0098","creator_id":"attacker_EV01","guess":"human","model_score":0.1635,"style_score":0.4848,"combined_score":0.3241,"label":"This writing appears likely to have been written by a person, but this result is not proof of authorship.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:01+00:00","content_id":"52b0e158-08a8-4873-b8f2-596e05cd1d4a","creator_id":"attacker_FP05","guess":"ai","model_score":0.8005,"style_score":0.5906,"combined_score":0.6956,"label":"This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:01+00:00","content_id":"9e26a5a2-9ad8-4fbf-b8e7-d5534e106288","creator_id":"attacker_FP07","guess":"ai","model_score":0.8816,"style_score":0.442,"combined_score":0.6618,"label":"This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:01+00:00","content_id":"984e9cef-9a6f-40a5-987a-fb16b16bebc6","creator_id":"attacker_MF03","guess":"human","model_score":0.0,"style_score":0.5,"combined_score":0.25,"label":"This writing appears likely to have been written by a person, but this result is not proof of authorship.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:02+00:00","content_id":"2601dc22-5625-4f7b-82a1-de8a5e31f2d3","creator_id":"attacker_MF06","guess":"ai","model_score":0.9969,"style_score":0.85,"combined_score":0.9234,"label":"This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:02+00:00","content_id":"d9583911-36b9-4c27-8fbb-db1f65a8506c","creator_id":"attacker_MF07","guess":"ai","model_score":0.9064,"style_score":0.9822,"combined_score":0.9443,"label":"This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:02+00:00","content_id":"1e6f8b9b-c34b-48d3-83b6-4d86e9c414b4","creator_id":"attacker_MF08","guess":"ai","model_score":0.9876,"style_score":0.6074,"combined_score":0.7975,"label":"This writing shows patterns associated with AI-generated text. This result is not proof and should be reviewed by a person.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:01+00:00","content_id":"389c1e55-43f9-495b-9e5f-d02014b3eb12","creator_id":"attacker_PI01","guess":"human","model_score":0.4625,"style_score":0.1207,"combined_score":0.2916,"label":"This writing appears likely to have been written by a person, but this result is not proof of authorship.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:03+00:00","content_id":"cbce3a07-9ea5-47da-82ee-524ff0a8a097","creator_id":"attacker_flood","guess":"human","model_score":0.0287,"style_score":0.6159,"combined_score":0.3223,"label":"This writing appears likely to have been written by a person, but this result is not proof of authorship.","status":"decided"}
+{"timestamp":"2026-11-05T00:47:03+00:00","creator_id":"attacker_flood","event":"rejected","status":"rejected","reason":"rate_limited","limit":"6 per 1 minute"}
 ```
 
 **The single worst outcome** — the one I'd least want to explain to a writer
 whose work got caught by it:
 
-
+My worst result was FP05. The system labelled human-written technical
+documentation as AI with a score of 0.6956. Technical instructions naturally
+use short commands and repeated sentence patterns, so the detector confused a
+clear writing style with AI authorship. I would not want a real writer to be
+questioned only because their work was direct and structured.
 
 ---
 
