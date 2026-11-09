@@ -727,10 +727,6 @@ accusations against real writers. The site would pay through more manual review
 and some missed AI text, rather than making a writer pay for an unreliable
 automated decision.
 
-**Repository URL:**
-https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026
-
-
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
