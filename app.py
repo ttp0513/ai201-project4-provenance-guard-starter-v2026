@@ -24,6 +24,8 @@ Routes:
     GET  /health      is the service up, and is the model loaded
 """
 
+import re
+import unicodedata
 import uuid
 
 from flask import Flask, jsonify, request
@@ -246,8 +248,46 @@ def submit():
     if not text.strip():
         return reject("empty_text", "text must not be empty.")
 
-    # Criterion 5 treats a 50,000-word submission as oversized. HTTP 413 means
-    # "Content Too Large" and distinguishes this from an ordinary bad request.
+    # Improvement from Unit 8: reject unsupported input before either signal
+    # turns it into a misleading authorship score. The local GPT-2 model and
+    # stylometry rules are designed for ordinary English prose.
+    #
+    # A character limit catches a huge unbroken string, which can bypass a
+    # word-count-only limit because it still counts as one word.
+    if len(text) > 50_000:
+        return reject(
+            "text_too_large",
+            "text must contain no more than 50,000 characters.",
+            413,
+        )
+
+    # Newlines and tabs are normal writing characters. Other control
+    # characters, such as null bytes and terminal escape codes, are not prose.
+    has_unsafe_control = any(
+        unicodedata.category(character) == "Cc"
+        and character not in "\n\r\t"
+        for character in text
+    )
+    if has_unsafe_control:
+        return reject(
+            "unsupported_text",
+            "text contains unsupported control characters.",
+        )
+
+    # Requiring at least two Latin-alphabet words rejects punctuation, emoji,
+    # one giant token, and scripts the English-only detector cannot evaluate.
+    # A production system should route other languages to a multilingual model
+    # instead of treating unsupported writing as evidence of AI authorship.
+    latin_words = re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)?", text)
+    if len(latin_words) < 2:
+        return reject(
+            "unsupported_text",
+            "text must contain at least two supported words.",
+        )
+
+    # Criterion 5 also treats a 50,000-word submission as oversized. HTTP 413
+    # means "Content Too Large" and distinguishes it from an ordinary bad
+    # request.
     if len(text.split()) >= 50_000:
         return reject(
             "text_too_large",

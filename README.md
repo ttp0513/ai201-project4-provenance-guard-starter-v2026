@@ -561,21 +561,103 @@ The 14 broken attacks also formed four patterns:
 ## The Improvement
 
 **What I changed:**
+I added supported-input validation before either signal runs. The route now
+rejects text over 50,000 characters, unsafe control characters, and text with
+fewer than two supported Latin-alphabet words. Rejections still go through
+`audit.log_rejection`, so the new checks do not create gaps in the log.
 
 **Which diagnosis pointed at it:**
+MF03 through MF08 all reached the signals even though they contained control
+characters, punctuation, one giant token, emoji, unsupported script, or 60,000
+characters. The route only checked whether `text` was a non-empty string and
+whether it had 50,000 words, so it produced authorship labels for input the
+English detector could not meaningfully evaluate.
 
 ### Attack Run - After
 
 <!-- Same format. `run_attacks.py --label after` -->
 
+Full evidence: `results/attack_run_2026-11-08_2239_after.md`.
 
+| ID | Status | Guess | Verdict |
+|---|---:|---|---|
+| EV01 | 200 | human | BROKE |
+| EV02 | 200 | human | BROKE |
+| EV03 | 200 | unsure | HELD |
+| EV04 | 200 | unsure | HELD |
+| EV05 | 200 | human | BROKE |
+| EV06 | 200 | unsure | HELD |
+| EV07 | 200 | unsure | HELD |
+| EV08 | 200 | human | BROKE |
+| EV09 | 200 | unsure | HELD |
+| EV10 | 200 | ai | HELD |
+| FP01 | 200 | unsure | HELD |
+| FP02 | 200 | unsure | HELD |
+| FP03 | 200 | unsure | HELD |
+| FP04 | 200 | unsure | HELD |
+| FP05 | 200 | ai | BROKE |
+| FP06 | 200 | unsure | HELD |
+| FP07 | 200 | ai | BROKE |
+| FP08 | 200 | human | HELD |
+| PI01 | 200 | human | BROKE |
+| PI02 | 200 | human | BROKE |
+| PI03 | 200 | unsure | HELD |
+| PI04 | 200 | unsure | HELD |
+| PI05 | 200 | unsure | HELD |
+| PI06 | 200 | unsure | HELD |
+| MF01 | 400 | — | HELD |
+| MF02 | 400 | — | HELD |
+| MF03 | 400 | — | HELD |
+| MF04 | 400 | — | HELD |
+| MF05 | 400 | — | HELD |
+| MF06 | 400 | — | HELD |
+| MF07 | 400 | — | HELD |
+| MF08 | 413 | — | HELD |
+| RQ01 | 400 | — | HELD |
+| RQ02 | 400 | — | HELD |
+| RQ03 | 400 | — | HELD |
+| RQ04 | 400 | — | HELD |
+| RQ05 | 400 | — | HELD |
+| RQ06 | 400 | — | HELD |
+| RQ07 | 400 | — | HELD |
+| RQ08 | 400 | — | HELD |
+| RQ09 | 400 | — | HELD |
+| RQ10 | 400 | — | HELD |
+| RQ11 | 429 | — | HELD |
+| RQ12 | 400 | — | HELD |
+| FL01_01 | 200 | human | HELD |
+| FL01_02 | 200 | human | HELD |
+| FL01_03 | 200 | human | HELD |
+| FL01_04 | 200 | human | HELD |
+| FL01_05 | 200 | human | HELD |
+| FL01_06 | 200 | human | HELD |
+| FL01_07 | 429 | — | HELD |
+| FL01_08 | 429 | — | HELD |
+| FL01_09 | 429 | — | HELD |
+| FL01_10 | 429 | — | HELD |
+| FL01_11 | 429 | — | HELD |
+| FL01_12 | 429 | — | HELD |
+
+| Family | BROKE before | BROKE after | Change |
+|---|---:|---:|---:|
+| Evasion | 4 | 4 | 0 |
+| False positive | 2 | 2 | 0 |
+| Prompt injection | 2 | 2 | 0 |
+| Malformed | 6 | 0 | -6 |
+| Flood | 0 | 0 | 0 |
+| **Total** | **14** | **8** | **-6** |
 
 **Did it help, and how do I know:**
 
 <!-- Widening the unsure band usually fixes one problem and creates another.
      Reporting that trade honestly is worth full credit. -->
 
-
+Yes, for the problem I changed. Broken malformed attacks fell from six to zero,
+and total broken attacks fell from 14 to 8. MF03 through MF07 now return `400`
+and MF08 returns `413` instead of receiving misleading authorship scores. The
+five acceptance-criteria verdicts stayed the same, which makes sense because I
+did not change either signal, the combining rule, or the label thresholds. The
+full criteria evidence is in `results/run_2026-11-08_2240_after.md`.
 
 ---
 
