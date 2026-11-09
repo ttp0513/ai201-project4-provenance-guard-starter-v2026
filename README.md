@@ -32,12 +32,12 @@
      a picture of your terminal gets none.
      ───────────────────────────────────────────────────────────────────────── -->
 
-<!-- ═══════════════════════ UNIT 7 — THE BUILD ═══════════════════════ -->
+<!-- ═══════════════════════ UNIT 7 - THE BUILD ═══════════════════════ -->
 
 ## What This Does
 
 <!-- The path a submission takes, from arriving to the label a reader sees.
-     Six or seven steps — this is the trace you wrote in Milestone 1. -->
+     Six or seven steps - this is the trace you wrote in Milestone 1. -->
 
 Provenance Guard is a web service that looks at submitted writing and estimates
 whether it looks human-written or AI-generated. It cannot prove who wrote the
@@ -65,9 +65,9 @@ records the appeal and marks the submission as `under_review`.
      human and AI writing, and WHAT IT CAN'T SEE.
 
      The blind spot is not optional. If you can't name it you don't understand
-     the signal yet — and unit 8's attack set is built out of blind spots. -->
+     the signal yet - and unit 8's attack set is built out of blind spots. -->
 
-### Signal one — the model signal
+### Signal one - the model signal
 
 **What it measures:**
 
@@ -87,7 +87,7 @@ This signal does not know who wrote the text. A person writing in a second
 language, a younger writer, or anyone using simple words may get a high AI
 score. AI text with rare words may also get a human-like score.
 
-### Signal two — the style signal
+### Signal two - the style signal
 
 **What it measures:**
 
@@ -281,7 +281,7 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
 AI helped me move faster, but I stayed responsible for the requirements,
 design choices, testing, and final explanation.
 
-<!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
+<!-- ═══════════════════════ UNIT 8 - THE TEST ═══════════════════════ -->
 
 ---
 
@@ -304,7 +304,7 @@ being blocked.
      the second. -->
 
 **What a caller counts as:** <!-- per address, or per creator_id? They fail
-differently — one script can look like a thousand callers, and one household
+differently - one script can look like a thousand callers, and one household
 can look like one. -->
 
 The service counts each creator_id as one caller and uses the IP address when a valid ID is missing. I chose creator_id because different writers may share the same household or school network, and an IP-only limit could block them together. However, the service does not verify the ID, so an attacker can avoid the limit by changing it. In a real system, I would use an authenticated account or API key and combine per-account and per-IP limits.
@@ -344,7 +344,7 @@ The first one is slow while the model loads.
 
 ---
 
-## Attack Run — Before
+## Attack Run - Before
 
 <!-- Every attack with its outcome and a held-or-broke mark.
      `run_attacks.py --label before` produces the table. -->
@@ -380,38 +380,38 @@ system. The complete raw report is in
 | PI04 | prompt injection | hostile label text | 200 | unsure | 0.352 | HELD |
 | PI05 | prompt injection | audit-log injection | 200 | unsure | 0.374 | HELD |
 | PI06 | prompt injection | instruction plus human text | 200 | unsure | 0.447 | HELD |
-| MF01 | malformed | whitespace only | 400 | — | — | HELD |
-| MF02 | malformed | single character | 400 | — | — | HELD |
+| MF01 | malformed | whitespace only | 400 | - | - | HELD |
+| MF02 | malformed | single character | 400 | - | - | HELD |
 | MF03 | malformed | control characters | 200 | human | 0.250 | BROKE |
 | MF04 | malformed | punctuation only | 200 | unsure | 0.431 | BROKE |
 | MF05 | malformed | very long single word | 200 | ai | 0.824 | BROKE |
 | MF06 | malformed | emoji only | 200 | ai | 0.923 | BROKE |
 | MF07 | malformed | right-to-left script | 200 | ai | 0.944 | BROKE |
 | MF08 | malformed | 60,000 characters | 200 | ai | 0.797 | BROKE |
-| RQ01 | malformed request | no text field | 400 | — | — | HELD |
-| RQ02 | malformed request | no creator ID | 400 | — | — | HELD |
-| RQ03 | malformed request | text is a number | 400 | — | — | HELD |
-| RQ04 | malformed request | text is a list | 400 | — | — | HELD |
-| RQ05 | malformed request | text is null | 400 | — | — | HELD |
-| RQ06 | malformed request | creator ID is an object | 400 | — | — | HELD |
-| RQ07 | malformed request | body is a JSON array | 400 | — | — | HELD |
-| RQ08 | malformed request | unparseable JSON | 400 | — | — | HELD |
-| RQ09 | malformed request | empty body | 400 | — | — | HELD |
-| RQ10 | malformed request | form-encoded body | 400 | — | — | HELD |
-| RQ11 | malformed request | JSON sent as plain text | 429 | — | — | HELD |
-| RQ12 | malformed request | deeply nested JSON | 400 | — | — | HELD |
+| RQ01 | malformed request | no text field | 400 | - | - | HELD |
+| RQ02 | malformed request | no creator ID | 400 | - | - | HELD |
+| RQ03 | malformed request | text is a number | 400 | - | - | HELD |
+| RQ04 | malformed request | text is a list | 400 | - | - | HELD |
+| RQ05 | malformed request | text is null | 400 | - | - | HELD |
+| RQ06 | malformed request | creator ID is an object | 400 | - | - | HELD |
+| RQ07 | malformed request | body is a JSON array | 400 | - | - | HELD |
+| RQ08 | malformed request | unparseable JSON | 400 | - | - | HELD |
+| RQ09 | malformed request | empty body | 400 | - | - | HELD |
+| RQ10 | malformed request | form-encoded body | 400 | - | - | HELD |
+| RQ11 | malformed request | JSON sent as plain text | 429 | - | - | HELD |
+| RQ12 | malformed request | deeply nested JSON | 400 | - | - | HELD |
 | FL01_01 | flood | request 1 from one creator | 200 | human | 0.322 | HELD |
 | FL01_02 | flood | request 2 from one creator | 200 | human | 0.322 | HELD |
 | FL01_03 | flood | request 3 from one creator | 200 | human | 0.322 | HELD |
 | FL01_04 | flood | request 4 from one creator | 200 | human | 0.322 | HELD |
 | FL01_05 | flood | request 5 from one creator | 200 | human | 0.322 | HELD |
 | FL01_06 | flood | request 6 from one creator | 200 | human | 0.322 | HELD |
-| FL01_07 | flood | request 7 from one creator | 429 | — | — | HELD |
-| FL01_08 | flood | request 8 from one creator | 429 | — | — | HELD |
-| FL01_09 | flood | request 9 from one creator | 429 | — | — | HELD |
-| FL01_10 | flood | request 10 from one creator | 429 | — | — | HELD |
-| FL01_11 | flood | request 11 from one creator | 429 | — | — | HELD |
-| FL01_12 | flood | request 12 from one creator | 429 | — | — | HELD |
+| FL01_07 | flood | request 7 from one creator | 429 | - | - | HELD |
+| FL01_08 | flood | request 8 from one creator | 429 | - | - | HELD |
+| FL01_09 | flood | request 9 from one creator | 429 | - | - | HELD |
+| FL01_10 | flood | request 10 from one creator | 429 | - | - | HELD |
+| FL01_11 | flood | request 11 from one creator | 429 | - | - | HELD |
+| FL01_12 | flood | request 12 from one creator | 429 | - | - | HELD |
 
 **Ten audit log entries from the run**
 
@@ -430,7 +430,7 @@ system. The complete raw report is in
 {"timestamp":"2026-11-05T00:47:03+00:00","creator_id":"attacker_flood","event":"rejected","status":"rejected","reason":"rate_limited","limit":"6 per 1 minute"}
 ```
 
-**The single worst outcome** — the one I'd least want to explain to a writer
+**The single worst outcome** - the one I'd least want to explain to a writer
 whose work got caught by it:
 
 My worst result was FP05. The system labelled human-written technical
@@ -447,17 +447,52 @@ questioned only because their work was direct and structured.
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. False positives | At most 2 of 10 human samples labelled `ai` | 0 of 10 | 0 of 10 | 0 of 10 | MET |
+| 2. Score separation | Human average ≤ 0.35 and AI average ≥ 0.65 | H 0.3947 / AI 0.4309 | H 0.3947 / AI 0.4309 | H 0.3947 / AI 0.4309 | MISSED |
+| 3. Label coverage | At least one `human`, `unsure`, and `ai` | 1 / 5 / 0 | 1 / 5 / 0 | 1 / 5 / 0 | MISSED |
+| 4. Appeal path | Appeal is `under_review`, logged, and original remains | All checks passed | All checks passed | All checks passed | MET |
+| 5. Bad input | Four logged 4xx responses and health 200 | 4 of 4; health 200 | 4 of 4; health 200 | 4 of 4; health 200 | MET |
 
 **Real output from one trial**, pasted as text, naming the file and function
 that produced it:
 
 ```json
-
+{
+  "source_file": "results/run_2026-11-08_2213_before.md",
+  "producer": "run_eval.py::main",
+  "trial": 1,
+  "criterion_1_guesses": [
+    "unsure", "unsure", "unsure", "human", "unsure",
+    "unsure", "human", "human", "unsure", "unsure"
+  ],
+  "criterion_2_human_combined_scores": [
+    0.4170, 0.5016, 0.3689, 0.3183, 0.4113,
+    0.4099, 0.2626, 0.3279, 0.5016, 0.4279
+  ],
+  "criterion_2_ai_combined_scores": [
+    0.4140, 0.4519, 0.4093, 0.5272, 0.4545,
+    0.3826, 0.3307, 0.4895, 0.4579, 0.3915
+  ],
+  "criterion_3_guesses": [
+    "unsure", "unsure", "unsure", "unsure", "unsure", "human"
+  ],
+  "criterion_4": {
+    "submit_status": 200,
+    "appeal_http_status": 200,
+    "appeal_status": "under_review",
+    "original_decision_preserved": true,
+    "appeal_logged": true
+  },
+  "criterion_5": {
+    "responses": [
+      {"status": 400, "error": "missing_text", "rejection_logged": true},
+      {"status": 400, "error": "empty_text", "rejection_logged": true},
+      {"status": 400, "error": "invalid_text", "rejection_logged": true},
+      {"status": 413, "error": "text_too_large", "rejection_logged": true}
+    ],
+    "health_after_trial": {"status": 200, "ok": true}
+  }
+}
 ```
 
 **Diagnoses**
@@ -470,12 +505,55 @@ that produced it:
      Not a diagnosis:  "The evasion attacks got through."
      A diagnosis:      "Four evasion inputs got through. All four had typos
                         added to AI-generated text. My second signal measures
-                        word variety, and typos raise word variety — so it read
+                        word variety, and typos raise word variety - so it read
                         them as more human. My combining rule weights that
                         signal at 0.6, so it dragged the whole score down."
 
      Look for a pattern. Five failures on one signal is one problem, not five. -->
 
+1. **False positives - MET.** I counted the `ai` labels across my ten human
+   samples. Every trial had three `human`, seven `unsure`, and zero `ai`, so it
+   stayed below my limit of two false AI classifications.
+
+2. **Score separation - MISSED.** The human average was `0.3947`, above my
+   `0.35` target, while the AI average was only `0.4309`, below my `0.65`
+   target. The failure started in **signal one**: its human average was `0.4700`
+   but its AI average was lower at `0.3951`, the opposite of the intended
+   direction. **Signal two** moved in the expected direction (`0.3194` human
+   and `0.4667` AI), but the equal-weight **combining rule** let the two signals
+   cancel. The final averages were separated by only `0.0362`.
+
+3. **Label coverage - MISSED.** Each trial returned one `human`, five
+   `unsure`, and no `ai`. This was not a bug in the **label mapping** because
+   none of the six combined scores reached the `0.65` AI threshold. The same
+   signal-one reversal and equal-weight cancellation from Criterion 2 kept all
+   six scores between `0.3307` and `0.4170`.
+
+4. **Appeal path - MET.** In all three trials, `/appeal` returned `200` with
+   `under_review`. Reading `/log` showed both the original `decided` entry and
+   the matching appeal entry, so the append-only history was preserved.
+
+5. **Bad input - MET.** The missing, empty, and null text requests returned
+   `400`, while the 50,000-word request returned `413`. All twelve rejections
+   were logged, and `/health` returned `200` after every trial.
+
+The 14 broken attacks also formed four patterns:
+
+- **EV01, EV02, EV05, and EV08 - signals and combining rule.** Typos, changed
+  sentence breaks, heavy editing, and short text changed the measurements
+  without changing the AI origin. Their combined scores fell into the human
+  range, showing that both signals can be changed by surface edits.
+- **FP05 and FP07 - signal one.** Human technical instructions and deliberate
+  repetition were very predictable to the language model. Signal one gave
+  them `0.8005` and `0.8816`, and the combined scores crossed the AI threshold.
+- **PI01 and PI02 - signals, not instruction following.** The service did not
+  execute the injected instructions, but the added command-like text changed
+  its predictability and style enough to produce the requested `human` label.
+- **MF03 through MF08 - route validation.** The route rejected missing or
+  incorrectly typed fields, but it accepted control characters, punctuation,
+  a giant word, emoji, unsupported script, and 60,000 characters as scorable
+  text. MF08 also bypassed the size check because the route counts words while
+  that attack was large in characters.
 
 
 ---
@@ -486,7 +564,7 @@ that produced it:
 
 **Which diagnosis pointed at it:**
 
-### Attack Run — After
+### Attack Run - After
 
 <!-- Same format. `run_attacks.py --label after` -->
 
@@ -517,7 +595,7 @@ that produced it:
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
-     SUBMISSION CHECKLIST — unit 7
+     SUBMISSION CHECKLIST - unit 7
 
        [ ] criteria.md has five numbered criteria, each naming a target
        [ ] Each has a reason underneath
@@ -529,9 +607,9 @@ that produced it:
        [ ] Signals and Scoring names scoring.py::combine_signals
        [ ] Sample Run: a submission AND an appeal, as pasted text
        [ ] At least four new commits
-       [ ] Repository URL submitted — WRITE IT DOWN
+       [ ] Repository URL submitted - WRITE IT DOWN
 
-     SUBMISSION CHECKLIST — unit 8
+     SUBMISSION CHECKLIST - unit 8
 
        [ ] Rate limiting on /submit, with your numbers justified
        [ ] The pasted run of status codes showing 429
@@ -539,8 +617,8 @@ that produced it:
        [ ] The attack set run IN FULL, every input with an outcome
        [ ] Ten audit log entries pasted as text
        [ ] Five criteria across three trials
-       [ ] A diagnosis for every miss and every broken attack — stage AND mechanism
-       [ ] One improvement, with Attack Run — After
+       [ ] A diagnosis for every miss and every broken attack - stage AND mechanism
+       [ ] One improvement, with Attack Run - After
        [ ] What's Still Broken, including the production trade
        [ ] At least four new commits
        [ ] The SAME repository URL as last unit
