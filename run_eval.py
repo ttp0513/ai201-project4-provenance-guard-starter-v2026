@@ -52,8 +52,12 @@ def bodies_for(scenario):
     """
     if scenario.get("bodies"):
         return list(scenario["bodies"])
+
+    # Use the complete scenario name so similarly named scenarios, such as the
+    # human and AI score-spread groups, do not share one rate-limit identity.
+    scenario_slug = "_".join(scenario["name"].lower().split())
     return [
-        {"text": text, "creator_id": f"eval_{scenario['name'][:12]}_{i}"}
+        {"text": text, "creator_id": f"eval_{scenario_slug}_{i}"}
         for i, text in enumerate(scenario["texts"], 1)
     ]
 
@@ -64,6 +68,103 @@ def describe(body):
         text = body["text"]
         return text[:70] if text else "(empty text)"
     return json.dumps(body)[:120]
+
+
+def read_log_entries(args, requests):
+    """Read the public audit endpoint and return its list of entries."""
+    response = requests.get(f"{args.url}/log", timeout=args.timeout)
+    response.raise_for_status()
+    payload = response.json() if response.content else {}
+    return payload.get("entries", [])
+
+
+def rejection_count(entries, creator_id):
+    """Count logged rejections belonging to one test caller."""
+    return sum(
+        entry.get("creator_id") == creator_id
+        and entry.get("status") == "rejected"
+        for entry in entries
+    )
+
+
+def result_summary(result):
+    """Produce one short terminal label for a detailed result dictionary."""
+    if result.get("guess"):
+        return result["guess"]
+    if result.get("appeal_status"):
+        return result["appeal_status"]
+    if result.get("check"):
+        return f"{result['check']}={result.get('status', 'error')}"
+    if result.get("status") is not None:
+        return f"HTTP {result['status']}"
+    return "—"
+
+
+def run_appeal_scenario(scenario, trial, args, requests):
+    """Submit one text, appeal its ID, and confirm both audit entries exist."""
+    appeal_case = scenario["appeal"]
+    creator_id = f"eval_appeal_trial_{trial}"
+    submit_body = {
+        "text": appeal_case["text"],
+        "creator_id": creator_id,
+    }
+
+    try:
+        submit_response = requests.post(
+            f"{args.url}/submit",
+            json=submit_body,
+            timeout=args.timeout,
+        )
+        submit_payload = submit_response.json() if submit_response.content else {}
+        content_id = submit_payload.get("content_id")
+
+        result = {
+            "submit_status": submit_response.status_code,
+            "content_id": content_id,
+            "submit_guess": submit_payload.get("guess"),
+            "appeal_http_status": None,
+            "appeal_status": None,
+            "original_decision_preserved": False,
+            "appeal_logged": False,
+            "matching_log_entries": [],
+        }
+
+        # A failed submission cannot be appealed, but its result still belongs
+        # in the report so the criterion receives an honest miss.
+        if submit_response.status_code != 200 or not content_id:
+            result["error"] = "The submission did not return a content_id."
+            return result
+
+        appeal_response = requests.post(
+            f"{args.url}/appeal",
+            json={
+                "content_id": content_id,
+                "reasoning": appeal_case["reasoning"],
+            },
+            timeout=args.timeout,
+        )
+        appeal_payload = appeal_response.json() if appeal_response.content else {}
+        result["appeal_http_status"] = appeal_response.status_code
+        result["appeal_status"] = appeal_payload.get("status")
+
+        # Read through the public route, just as a reviewer would. This proves
+        # the appeal response was not merely returned without being recorded.
+        matching_entries = [
+            entry for entry in read_log_entries(args, requests)
+            if entry.get("content_id") == content_id
+        ]
+        result["matching_log_entries"] = matching_entries
+        result["original_decision_preserved"] = any(
+            entry.get("status") == "decided" for entry in matching_entries
+        )
+        result["appeal_logged"] = any(
+            entry.get("event") == "appeal"
+            and entry.get("status") == "under_review"
+            for entry in matching_entries
+        )
+        return result
+    except Exception as exc:  # noqa: BLE001
+        return {"error": f"{type(exc).__name__}: {exc}"}
 
 
 def main():
@@ -113,28 +214,74 @@ def main():
         trials = []
         for trial in range(1, args.trials + 1):
             results = []
-            for i, body in enumerate(bodies_for(scenario), 1):
-                preview = describe(body)
-                try:
-                    response = requests.post(f"{args.url}/submit", json=body,
-                                             timeout=args.timeout)
-                    payload = response.json() if response.content else {}
-                    results.append({
-                        "status": response.status_code,
-                        "guess": payload.get("guess"),
-                        "confidence": payload.get("confidence"),
-                        "model_score": payload.get("model_score"),
-                        "style_score": payload.get("style_score"),
-                        "label": payload.get("label"),
-                        "sent": preview,
-                    })
-                except Exception as exc:  # noqa: BLE001
-                    results.append({"status": None, "error": f"{type(exc).__name__}: {exc}",
-                                    "sent": preview})
+            if scenario.get("appeal"):
+                results.append(
+                    run_appeal_scenario(scenario, trial, args, requests)
+                )
+            else:
+                for i, body in enumerate(bodies_for(scenario), 1):
+                    preview = describe(body)
+                    creator_id = body.get("creator_id") if isinstance(body, dict) else None
+                    before_rejections = None
+                    if scenario.get("check_rejection_log") and creator_id:
+                        before_rejections = rejection_count(
+                            read_log_entries(args, requests),
+                            creator_id,
+                        )
+                    try:
+                        response = requests.post(f"{args.url}/submit", json=body,
+                                                 timeout=args.timeout)
+                        payload = response.json() if response.content else {}
+                        result = {
+                            "status": response.status_code,
+                            "guess": payload.get("guess"),
+                            "confidence": payload.get("confidence"),
+                            "model_score": payload.get("model_score"),
+                            "style_score": payload.get("style_score"),
+                            "label": payload.get("label"),
+                            "error": payload.get("error"),
+                            "sent": preview,
+                        }
+                        if before_rejections is not None:
+                            after_rejections = rejection_count(
+                                read_log_entries(args, requests),
+                                creator_id,
+                            )
+                            result["rejection_logged"] = (
+                                after_rejections > before_rejections
+                            )
+                        results.append(result)
+                    except Exception as exc:  # noqa: BLE001
+                        results.append({
+                            "status": None,
+                            "error": f"{type(exc).__name__}: {exc}",
+                            "sent": preview,
+                        })
+
+                if scenario.get("check_health"):
+                    try:
+                        health_response = requests.get(
+                            f"{args.url}/health",
+                            timeout=args.timeout,
+                        )
+                        health_payload = (
+                            health_response.json() if health_response.content else {}
+                        )
+                        results.append({
+                            "check": "health_after_trial",
+                            "status": health_response.status_code,
+                            "ok": health_payload.get("ok"),
+                        })
+                    except Exception as exc:  # noqa: BLE001
+                        results.append({
+                            "check": "health_after_trial",
+                            "status": None,
+                            "error": f"{type(exc).__name__}: {exc}",
+                        })
 
             trials.append(results)
-            guesses = [r.get("guess") or "—" for r in results]
-            print(f"  trial {trial}: {', '.join(guesses)}")
+            summaries = [result_summary(result) for result in results]
+            print(f"  trial {trial}: {', '.join(summaries)}")
 
         rows.append({"scenario": scenario, "trials": trials})
 
