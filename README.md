@@ -278,6 +278,22 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
   commits separated by milestone. My own AI-labelled sample returned `unsure`,
   which showed me why model output needs human review instead of blind trust.
 
+**Moment 3**
+
+- *What I asked for:* In Unit 8, I used AI as a testing coach. I asked it to
+  help automate the three trials, connect each appeal to its real content ID,
+  calculate the human and AI score averages, and explain why so many results
+  were `unsure`.
+- *What came back:* It helped organize the attack verdicts and showed that the
+  model signal ranked my AI samples below my human samples, while the style
+  signal moved in the intended direction. It also suggested several possible
+  fixes, including changing weights, thresholds, or input validation.
+- *What I changed:* I supplied and approved all ten human writing samples,
+  checked the verdict policy, and kept the missed criteria instead of changing
+  samples or thresholds to make them pass. I chose input validation because it
+  fixed a measured route problem without increasing false accusations. I then
+  compared the same attack and evaluation sets before and after the change.
+
 AI helped me move faster, but I stayed responsible for the requirements,
 design choices, testing, and final explanation.
 
@@ -666,6 +682,39 @@ full criteria evidence is in `results/run_2026-11-08_2240_after.md`.
 <!-- For each attack still getting through and each criterion still missed:
      what you'd do, and why you stopped. -->
 
+Eight attacks still broke the system after my improvement:
+
+- **EV01, EV02, EV05, and EV08:** AI text still received a `human` label after
+  typos, changed sentence breaks, heavy editing, or a short input changed the
+  two text signals. I would build a larger set of contemporary AI text and the
+  edited versions of that same text, then calibrate or replace the signals on
+  separate training and test sets.
+- **FP05 and FP07:** Human technical writing and deliberate repetition still
+  received an `ai` label. In a real system I would require human review and
+  supporting evidence such as drafts or revision history before taking action.
+  I would also select thresholds using a measured false-positive limit rather
+  than treating the detector score as proof.
+- **PI01 and PI02:** Adding instruction-like text still produced the requested
+  `human` result. The GPT-2 signal is not actually following the instruction;
+  the added words change predictability and style. I would add these variants
+  to an adversarial calibration set instead of blocking every sentence that
+  looks like an instruction, because legitimate writing can quote commands.
+
+Criteria 2 and 3 also remain missed. The human average is `0.3947`, the AI
+average is `0.4309`, and their separation is only `0.0362`. No selected
+label-coverage sample reaches the `0.65` AI threshold. My next improvement
+would be to recalibrate the two signals with a larger held-out dataset because
+signal one ran in the wrong direction on this small set. I stopped because
+Unit 8 asks for one measured change at a time, and changing weights using the
+same 20 samples would overfit the test instead of proving better
+classification.
+
+The route also rejects writing without at least two Latin-alphabet words. This
+is safer than giving unsupported writing a misleading AI score, but it excludes
+some legitimate languages. A production version would route those requests to
+a multilingual model. The rate limiter also trusts an unverified `creator_id`
+and stores counts only in memory, so changing IDs or restarting the service can
+bypass it.
 
 
 **The trade I'd make if this ran for real:**
@@ -673,6 +722,13 @@ full criteria evidence is in `results/run_2026-11-08_2240_after.md`.
 <!-- Two sentences. Fewer wrong accusations means more AI text getting through.
      Say which way you'd go and WHO PAYS FOR IT. -->
 
+I would accept more AI writing getting through in order to reduce false
+accusations against real writers. The site would pay through more manual review
+and some missed AI text, rather than making a writer pay for an unreliable
+automated decision.
+
+**Repository URL:**
+https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026
 
 
 <!-- ═════════════════════════════════════════════════════════════════════
