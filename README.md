@@ -783,6 +783,11 @@ Testing will use a synthetic Qualtrics-style CSV with documented field names
 and a separate evaluation-label file. It contains no real respondent data, and
 its results will not be presented as real-world accuracy.
 
+Milestone 2 starts with the data contract in `capstone_data/`. Run
+`python generate_survey_scenarios.py` to rebuild the 80 synthetic responses and
+their separate labels. `capstone_data/DATA_DICTIONARY.md` documents each field,
+range, assumption, and leakage rule.
+
 ### The Shape
 
 **Shape C — Extend one capability.**
