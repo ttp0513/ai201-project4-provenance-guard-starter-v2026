@@ -109,6 +109,14 @@ STYLE_PUNCTUATION_DENSITY_SCALE = 0.08
 HUMAN_THRESHOLD = 0.35
 AI_THRESHOLD = 0.65
 
+# ─── Capstone reliability policy ─────────────────────────────────────────────
+# These values do not claim a scientific boundary between reliable and
+# unreliable detection. They are visible prototype policies that Milestone 5
+# will test. A ten-point movement on the 0-1 scale or a thirty-five-point split
+# between the two signals is large enough to stop presenting a firm verdict.
+RELIABILITY_MAX_SCORE_RANGE = 0.10
+RELIABILITY_MAX_SIGNAL_DISAGREEMENT = 0.35
+
 # ⚠️ One thing that catches people out in Milestone 5. A weighted average can
 # only land between its two inputs — so while `style_signal` is still the stub
 # returning 0.5, the combined score can never leave 0.25–0.75 no matter what
