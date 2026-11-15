@@ -254,10 +254,22 @@ def submit():
     #
     # A character limit catches a huge unbroken string, which can bypass a
     # word-count-only limit because it still counts as one word.
-    if len(text) > 50_000:
+    if len(text) > config.MAX_TEXT_CHARACTERS:
         return reject(
             "text_too_large",
-            "text must contain no more than 50,000 characters.",
+            "text must contain no more than "
+            f"{config.MAX_TEXT_CHARACTERS:,} characters.",
+            413,
+        )
+
+    # Count words before checking language support. This keeps the size guard
+    # reachable for inputs made from many short tokens instead of letting a
+    # later content rule shadow it.
+    word_count = len(text.split())
+    if word_count > config.MAX_TEXT_WORDS:
+        return reject(
+            "text_too_large",
+            f"text must contain no more than {config.MAX_TEXT_WORDS:,} words.",
             413,
         )
 
@@ -265,7 +277,7 @@ def submit():
     # characters, such as null bytes and terminal escape codes, are not prose.
     has_unsafe_control = any(
         unicodedata.category(character) == "Cc"
-        and character not in "\n\r\t"
+        and character not in config.ALLOWED_CONTROL_CHARACTERS
         for character in text
     )
     if has_unsafe_control:
@@ -274,25 +286,17 @@ def submit():
             "text contains unsupported control characters.",
         )
 
-    # Requiring at least two Latin-alphabet words rejects punctuation, emoji,
-    # one giant token, and scripts the English-only detector cannot evaluate.
+    # Requiring a configured minimum of Latin-alphabet words rejects
+    # punctuation, emoji, one giant token, and scripts the English-only
+    # detector cannot evaluate.
     # A production system should route other languages to a multilingual model
     # instead of treating unsupported writing as evidence of AI authorship.
     latin_words = re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)?", text)
-    if len(latin_words) < 2:
+    if len(latin_words) < config.MIN_LATIN_WORDS:
         return reject(
             "unsupported_text",
-            "text must contain at least two supported words.",
-        )
-
-    # Criterion 5 also treats a 50,000-word submission as oversized. HTTP 413
-    # means "Content Too Large" and distinguishes it from an ordinary bad
-    # request.
-    if len(text.split()) >= 50_000:
-        return reject(
-            "text_too_large",
-            "text must contain fewer than 50,000 words.",
-            413,
+            "text must contain at least "
+            f"{config.MIN_LATIN_WORDS} supported words.",
         )
 
     # Step 3: Run signal one. This is the expensive local GPT-2 calculation.

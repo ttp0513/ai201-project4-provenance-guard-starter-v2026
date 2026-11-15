@@ -32,6 +32,8 @@ anything together:
 import re
 import statistics
 
+import config
+
 
 def sentences(text: str) -> list[str]:
     """Split into sentences. Rough and good enough — given to you."""
@@ -137,9 +139,16 @@ def ai_likeness_values(text: str) -> dict[str, float]:
     # AI-like. More punctuation lowers the AI-like value. These are the same
     # conversions used to calculate the final style signal below.
     return {
-        "sentence_length_spread": 1.0 - clamp(spread / 0.60),
-        "type_token_ratio": 1.0 - clamp((vocabulary - 0.45) / 0.35),
-        "punctuation_density": 1.0 - clamp(punctuation / 0.08),
+        "sentence_length_spread": 1.0 - clamp(
+            spread / config.STYLE_SENTENCE_SPREAD_SCALE
+        ),
+        "type_token_ratio": 1.0 - clamp(
+            (vocabulary - config.STYLE_TYPE_TOKEN_BASELINE)
+            / config.STYLE_TYPE_TOKEN_RANGE
+        ),
+        "punctuation_density": 1.0 - clamp(
+            punctuation / config.STYLE_PUNCTUATION_DENSITY_SCALE
+        ),
     }
 
 
@@ -169,9 +178,12 @@ def style_signal(text: str) -> float:
     ai_values = ai_likeness_values(text)
 
     score = (
-        0.50 * ai_values["sentence_length_spread"]
-        + 0.35 * ai_values["type_token_ratio"]
-        + 0.15 * ai_values["punctuation_density"]
+        config.STYLE_WEIGHT_SENTENCE_SPREAD
+        * ai_values["sentence_length_spread"]
+        + config.STYLE_WEIGHT_TYPE_TOKEN_RATIO
+        * ai_values["type_token_ratio"]
+        + config.STYLE_WEIGHT_PUNCTUATION_DENSITY
+        * ai_values["punctuation_density"]
     )
     return round(min(max(score, 0.0), 1.0), 4)
 

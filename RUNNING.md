@@ -102,6 +102,9 @@ position.**
 | `python detector.py` | Downloads the model and scores a sample — **run before class** |
 | `python detector.py "some text"` | Score one piece of text from the terminal |
 | `python stylometry.py "some text"` | Your style measures, on one piece of text |
+| `python run_calibration.py` | Score the fixed human/AI calibration set directly, without HTTP |
+| `python run_calibration.py --offline` | Reuse the downloaded model without network checks |
+| `python run_calibration.py --limit 2` | Run a quick two-per-group calibration check |
 | `python run_attacks.py --set <folder>` | The attack set — **unit 8** |
 | `python run_attacks.py --flood 15` | Push past your rate limit and print the status codes — **unit 8** |
 | `python run_eval.py --label before` | Your five criteria, three trials — **unit 8** |

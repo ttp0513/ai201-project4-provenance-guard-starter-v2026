@@ -46,6 +46,29 @@ DETECTOR_MODEL = os.getenv("AI201_DETECTOR_MODEL", "gpt2")
 # 300 words, which is enough for the signal to mean something.
 DETECTOR_MAX_TOKENS = 400
 
+# These values turn raw perplexity into the model signal's 0-1 score. They are
+# calibration choices, so they live here with the other scoring policy rather
+# than inside detector.model_signal().
+DETECTOR_PERPLEXITY_MIDPOINT = 45.0
+DETECTOR_SIGNAL_STEEPNESS = 1.6
+
+
+# â”€â”€â”€ Input validation policy â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Character and word limits catch different oversized inputs. The word limit
+# must be reachable below the character limit: 10,001 short words can fit in
+# fewer than 50,000 characters, while one huge unbroken token is caught by the
+# character limit.
+MAX_TEXT_CHARACTERS = 50_000
+MAX_TEXT_WORDS = 10_000
+
+# The local detector is designed for ordinary English prose. This minimum
+# stops unsupported input from receiving a misleading authorship score.
+MIN_LATIN_WORDS = 2
+
+# Newlines, carriage returns, and tabs are normal prose formatting. Other
+# Unicode control characters are rejected before the text reaches a signal.
+ALLOWED_CONTROL_CHARACTERS = frozenset("\n\r\t")
+
 
 # ─── Scoring (Milestone 4) ───────────────────────────────────────────────────
 # How much each signal counts toward the combined score.
@@ -56,6 +79,18 @@ DETECTOR_MAX_TOKENS = 400
 
 WEIGHT_MODEL_SIGNAL = 0.5
 WEIGHT_STYLE_SIGNAL = 0.5
+
+# How the three stylometry measures are normalized and combined. Each number
+# is a scoring judgment used by stylometry.py, so keeping them together makes
+# calibration changes visible and reviewable.
+STYLE_WEIGHT_SENTENCE_SPREAD = 0.50
+STYLE_WEIGHT_TYPE_TOKEN_RATIO = 0.35
+STYLE_WEIGHT_PUNCTUATION_DENSITY = 0.15
+
+STYLE_SENTENCE_SPREAD_SCALE = 0.60
+STYLE_TYPE_TOKEN_BASELINE = 0.45
+STYLE_TYPE_TOKEN_RANGE = 0.35
+STYLE_PUNCTUATION_DENSITY_SCALE = 0.08
 
 
 # ─── Thresholds (Milestone 5) ────────────────────────────────────────────────
