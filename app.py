@@ -25,6 +25,7 @@ Routes:
     GET  /health      is the service up, and is the model loaded
 """
 
+import hashlib
 import re
 import time
 import unicodedata
@@ -470,6 +471,7 @@ def reliability_check():
     latency_ms = round((time.perf_counter() - started) * 1000, 2)
     content_id = str(uuid.uuid4())
     original = analysis["original_result"]
+    input_sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
 
     # Log the measurements needed to reconstruct the decision. Submitted and
     # transformed text stay out of the audit log to avoid duplicating content.
@@ -493,6 +495,9 @@ def reliability_check():
         label=analysis["final_label"],
         status="decided",
         event="reliability_check",
+        input_sha256=input_sha256,
+        input_characters=len(text),
+        input_words=len(latin_words),
         original_guess=original["guess"],
         stability=analysis["stability"],
         score_range=analysis["score_range"],
@@ -501,6 +506,7 @@ def reliability_check():
         human_review=analysis["human_review"],
         reasons=analysis["reasons"],
         variant_count=analysis["variant_count"],
+        model_calls=analysis["variant_count"],
         variant_results=compact_variants,
         latency_ms=latency_ms,
     )
@@ -516,6 +522,7 @@ def reliability_check():
         "max_signal_disagreement": analysis["max_signal_disagreement"],
         "reasons": analysis["reasons"],
         "variant_count": analysis["variant_count"],
+        "model_calls": analysis["variant_count"],
         "original_result": original,
         "variant_results": analysis["variant_results"],
         "latency_ms": latency_ms,

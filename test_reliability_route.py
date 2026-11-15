@@ -130,6 +130,10 @@ class ReliabilityRouteTests(unittest.TestCase):
         }
         self.assertTrue(required_fields.issubset(entry))
         self.assertEqual(entry["event"], "reliability_check")
+        self.assertEqual(entry["input_characters"], len("Simple words only."))
+        self.assertEqual(entry["input_words"], 3)
+        self.assertEqual(len(entry["input_sha256"]), 64)
+        self.assertEqual(entry["model_calls"], entry["variant_count"])
         self.assertIn("latency_ms", entry)
         self.assertIn("variant_results", entry)
         self.assertNotIn("text", entry["variant_results"][0])
