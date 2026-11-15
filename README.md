@@ -803,6 +803,64 @@ signals enough to create false positives and false negatives. The reliability
 guard will not hide those weaknesses. It will measure them and make the system
 more cautious when its evidence is unstable.
 
+### Running It
+
+This capstone uses Path B: local with logs. The exact Windows command, clean
+checkout setup, health check, example request, and environment requirements are
+in [RUNNING.md](RUNNING.md). The command that starts the system from the
+repository root is:
+
+```powershell
+.\.venv\Scripts\python.exe app.py
+```
+
+The committed session runner is:
+
+```powershell
+.\.venv\Scripts\python.exe run_reliability_session.py
+```
+
+### Instrumentation
+
+Every successful `/reliability-check` request writes one JSON object. It
+contains a timestamp, a SHA-256 input hash, input size, original signal scores,
+variant scores, the guarded output, reasons, model-call count, and latency. The
+hash lets me match repeated input without storing the submitted writing.
+
+The real session on November 15, 2026 produced 10 successful HTTP 200 responses
+and 10 matching log entries. Seven were marked unstable and three were stable.
+All 10 final guesses were `unsure`, which is a real coverage weakness to test
+and diagnose rather than hide.
+
+Compact excerpts from all 10 entries are pasted below. The complete unchanged
+JSON Lines entries are in `results/capstone_milestone3_log.jsonl`.
+
+```jsonl
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_01_plain","input_sha256":"26b9d243aebc448d4e909b44dbf4c404fb9635d0ec9f21847a9842cad1cc1699","input_characters":38,"input_words":6,"model_score":0.1309,"style_score":0.65,"combined_score":0.3905,"guess":"unsure","stability":"unstable","score_range":0.0,"model_calls":1,"latency_ms":100934.55,"reasons":["signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_02_comma","input_sha256":"a6d3e0dfe643347127e8c3594f01402fff98465712b9cd36b50e104d02d391ac","input_characters":75,"input_words":12,"model_score":0.4166,"style_score":0.5999,"combined_score":0.5082,"guess":"unsure","stability":"stable","score_range":0.0548,"model_calls":2,"latency_ms":64.39,"reasons":["stable_across_variants"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_03_unicode","input_sha256":"40445dd44d6970c0d3269b90dfacdeacd5b210fd956adbf97c4cf05115f53057","input_characters":74,"input_words":11,"model_score":0.0695,"style_score":0.5486,"combined_score":0.309,"guess":"unsure","stability":"unstable","score_range":0.0332,"model_calls":3,"latency_ms":88.56,"reasons":["signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_04_whitespace","input_sha256":"832fe834c6c3703811c8d7b90411bb91942c7aa01cd2be9760af8cab03ca677a","input_characters":72,"input_words":10,"model_score":0.5378,"style_score":0.3622,"combined_score":0.45,"guess":"unsure","stability":"unstable","score_range":0.1315,"model_calls":2,"latency_ms":58.36,"reasons":["label_changed","large_score_range"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_05_semicolon","input_sha256":"384a504a46a6de030e723cd9faf237cdf67ce420d9e23bd47bb599a29be37523","input_characters":78,"input_words":13,"model_score":0.4863,"style_score":0.5298,"combined_score":0.5081,"guess":"unsure","stability":"unstable","score_range":0.1122,"model_calls":2,"latency_ms":80.63,"reasons":["large_score_range","signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_06_quotes","input_sha256":"ab101caa2ebd584f4239daabfc47163df20f42ec47ae000c43d166fe69278185","input_characters":83,"input_words":14,"model_score":0.4339,"style_score":0.5144,"combined_score":0.4741,"guess":"unsure","stability":"stable","score_range":0.0638,"model_calls":2,"latency_ms":65.95,"reasons":["stable_across_variants"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_07_hyphen","input_sha256":"f0dd54d3ea63e0f66070a4ab8eef997ced46167b130197a7e33c47e926cd757a","input_characters":79,"input_words":14,"model_score":0.5028,"style_score":0.5313,"combined_score":0.5171,"guess":"unsure","stability":"unstable","score_range":0.1139,"model_calls":2,"latency_ms":60.04,"reasons":["large_score_range","signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_08_short","input_sha256":"164f0bf99b3b3d5175cfe735e559ff3e6859c856f267ee6c0b21804a7806e4f0","input_characters":28,"input_words":4,"model_score":0.1953,"style_score":0.5161,"combined_score":0.3557,"guess":"unsure","stability":"unstable","score_range":0.0625,"model_calls":2,"latency_ms":54.61,"reasons":["label_changed","signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_09_formal","input_sha256":"695c0e8051bff94664191bca758fcd3c43b271fa2769be7b178f22b757e31169","input_characters":98,"input_words":13,"model_score":0.2661,"style_score":0.6309,"combined_score":0.4485,"guess":"unsure","stability":"unstable","score_range":0.0,"model_calls":1,"latency_ms":31.04,"reasons":["signals_disagree"]}
+{"timestamp":"2026-11-15T23:41:58+00:00","creator_id":"capstone_m3_case_10_informal","input_sha256":"47e3276c65d73a55b67460509e98903ebb60b554bf05ccda0a42ce3c965a8abc","input_characters":75,"input_words":16,"model_score":0.5805,"style_score":0.5999,"combined_score":0.5902,"guess":"unsure","stability":"stable","score_range":0.0358,"model_calls":2,"latency_ms":61.69,"reasons":["stable_across_variants"]}
+```
+
+### What It Costs
+
+The 10-case run made 19 local GPT-2 calls. It took 101.55 seconds in total.
+The first request took 100,934.55 ms because the model was not loaded and its
+loader repeatedly attempted blocked online metadata checks before using the
+cached files. This cold start is a real operational weakness.
+
+The remaining nine server requests averaged 62.81 ms, and the slowest warm
+request took 88.56 ms. The average including cold start was 10,149.98 ms per
+request. No hosted API was called, so the measured hosted API charge was
+`$0.00`. The full table and arithmetic are in
+`results/capstone_milestone3_summary.md`.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
