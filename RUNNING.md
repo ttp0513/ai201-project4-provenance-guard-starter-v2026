@@ -1,5 +1,66 @@
 # Running Provenance Guard
 
+## Capstone local run path
+
+This capstone uses **Path B: local with logs**. GPT-2 runs on this computer, so
+the service needs no API key and makes no paid model call.
+
+From a clean checkout on Windows PowerShell, prepare the environment once:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe detector.py
+```
+
+The last command downloads the GPT-2 model before the first service run.
+
+From the repository root, the exact command that starts the system is:
+
+```powershell
+.\.venv\Scripts\python.exe app.py
+```
+
+Leave that terminal running. In a second PowerShell terminal, check it:
+
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:5000/health
+```
+
+Send one reliability request:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5000/reliability-check -ContentType 'application/json' -Body '{"creator_id":"demo_writer","text":"The service was helpful, but the instructions were confusing at first."}'
+```
+
+Run the committed ten-case instrumentation session:
+
+```powershell
+.\.venv\Scripts\python.exe run_reliability_session.py
+```
+
+The session runner saves a structured JSON Lines record and cost summary under
+`results/`.
+
+### Environment requirements
+
+| Requirement | Value |
+| --- | --- |
+| Operating mode | Local CPU, Path B |
+| Python | 3.11, 3.12, or 3.13; tested with 3.12.8 |
+| Dependencies | Pinned ranges in `requirements.txt` |
+| Local model | `gpt2`, downloaded by `python detector.py` |
+| Model size | About 550 MB on disk, plus PyTorch and runtime memory |
+| API key | None |
+| Default address | `http://127.0.0.1:5000` |
+
+Each successful reliability log records the input SHA-256 hash, input length,
+output scores, stability decision, model-call count, and latency. It does not
+store the submitted text. Local cost is measured using wall-clock time and the
+number of GPT-2 calls; hosted API cost is `$0.00`.
+
+---
+
 Everything about how the starter works.
 
 This is a **web service**. It runs on your machine and you talk to it with
@@ -76,8 +137,7 @@ curl -X POST http://127.0.0.1:5000/submit \
   -d '{"text": "some writing", "creator_id": "me"}'
 ```
 
-It returns a `501` saying it isn't built yet. **That's the correct starting
-position.**
+It now returns the completed Project 4 classification.
 
 ---
 
@@ -88,8 +148,9 @@ position.**
 | `POST /ping` | **works** | The example. Don't edit it |
 | `GET /health` | **works** | Is the service up, is the model loaded |
 | `GET /log` | **works** | The audit log, as JSON |
-| `POST /submit` | **you build it** | Milestones 3, 4, 5 |
-| `POST /appeal` | **you build it** | Milestone 5 |
+| `POST /submit` | **works** | Scores and logs one text submission |
+| `POST /reliability-check` | **works** | Measures whether a verdict stays stable |
+| `POST /appeal` | **works** | Records a request for human review |
 
 ---
 
@@ -105,6 +166,7 @@ position.**
 | `python run_calibration.py` | Score the fixed human/AI calibration set directly, without HTTP |
 | `python run_calibration.py --offline` | Reuse the downloaded model without network checks |
 | `python run_calibration.py --limit 2` | Run a quick two-per-group calibration check |
+| `python run_reliability_session.py` | Run and save the ten-case capstone instrumentation session |
 | `python run_attacks.py --set <folder>` | The attack set — **unit 8** |
 | `python run_attacks.py --flood 15` | Push past your rate limit and print the status codes — **unit 8** |
 | `python run_eval.py --label before` | Your five criteria, three trials — **unit 8** |
