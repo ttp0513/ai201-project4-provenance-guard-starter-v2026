@@ -19,12 +19,14 @@ Routes:
 
     POST /ping        the worked example. Already works. Don't edit it
     POST /submit      score, label, log, and answer
+    POST /reliability-check  test whether a verdict stays stable
     POST /appeal      record a request for human review
     GET  /log         the audit log. Already works
     GET  /health      is the service up, and is the model loaded
 """
 
 import re
+import time
 import unicodedata
 import uuid
 
@@ -33,6 +35,7 @@ from flask import Flask, jsonify, request
 import audit
 import config
 import detector
+import reliability
 import scoring
 import stylometry
 
@@ -350,6 +353,172 @@ def submit():
         "label": label,
         "model_score": model_score,
         "style_score": style_score,
+    })
+
+
+def _score_for_reliability(text: str) -> dict:
+    """Run the existing Project 4 pipeline for one reliability variant."""
+
+    model_score = detector.model_signal(text)
+    style_score = stylometry.style_signal(text)
+    combined_score = scoring.combine_signals(model_score, style_score)
+    guess, label = scoring.score_to_label(combined_score)
+    return {
+        "model_score": model_score,
+        "style_score": style_score,
+        "combined_score": combined_score,
+        "guess": guess,
+        "label": label,
+    }
+
+
+@app.post("/reliability-check")
+@limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
+def reliability_check():
+    """Measure whether small formatting changes alter the detector verdict.
+
+    This route does not make a second authorship claim. It runs the existing
+    pipeline on deterministic variants, measures movement, and replaces an
+    unstable firm answer with `unsure` so a person can review it.
+    """
+
+    started = time.perf_counter()
+    payload = request.get_json(silent=True)
+
+    def reject(reason: str, message: str, status_code: int = 400):
+        """Log each rejected reliability request before returning it."""
+
+        creator_id = "unknown"
+        if isinstance(payload, dict):
+            candidate = payload.get("creator_id")
+            if isinstance(candidate, str) and candidate.strip():
+                creator_id = candidate.strip()
+        audit.log_rejection(
+            creator_id=creator_id,
+            reason=reason,
+            route="reliability_check",
+        )
+        return jsonify({"error": reason, "message": message}), status_code
+
+    # Apply the same input policy as /submit before multiplying the number of
+    # model calls. The original route remains unchanged.
+    if not isinstance(payload, dict):
+        return reject("invalid_json", "The request body must be a JSON object.")
+
+    creator_id = payload.get("creator_id")
+    if not isinstance(creator_id, str) or not creator_id.strip():
+        return reject(
+            "invalid_creator_id",
+            "creator_id is required and must be a non-empty string.",
+        )
+    creator_id = creator_id.strip()
+
+    if "text" not in payload:
+        return reject("missing_text", "text is required.")
+    text = payload.get("text")
+    if not isinstance(text, str):
+        return reject("invalid_text", "text must be a string.")
+    if not text.strip():
+        return reject("empty_text", "text must not be empty.")
+
+    if len(text) > config.MAX_TEXT_CHARACTERS:
+        return reject(
+            "text_too_large",
+            "text must contain no more than "
+            f"{config.MAX_TEXT_CHARACTERS:,} characters.",
+            413,
+        )
+
+    word_count = len(text.split())
+    if word_count > config.MAX_TEXT_WORDS:
+        return reject(
+            "text_too_large",
+            f"text must contain no more than {config.MAX_TEXT_WORDS:,} words.",
+            413,
+        )
+
+    has_unsafe_control = any(
+        unicodedata.category(character) == "Cc"
+        and character not in config.ALLOWED_CONTROL_CHARACTERS
+        for character in text
+    )
+    if has_unsafe_control:
+        return reject(
+            "unsupported_text",
+            "text contains unsupported control characters.",
+        )
+
+    latin_words = re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)?", text)
+    if len(latin_words) < config.MIN_LATIN_WORDS:
+        return reject(
+            "unsupported_text",
+            "text must contain at least "
+            f"{config.MIN_LATIN_WORDS} supported words.",
+        )
+
+    try:
+        analysis = reliability.analyze(text, _score_for_reliability)
+    except ValueError as exc:
+        return reject("text_too_short", str(exc))
+    except detector.DetectorUnavailable:
+        return reject(
+            "detector_unavailable",
+            "The local detector model is unavailable.",
+            503,
+        )
+
+    latency_ms = round((time.perf_counter() - started) * 1000, 2)
+    content_id = str(uuid.uuid4())
+    original = analysis["original_result"]
+
+    # Log the measurements needed to reconstruct the decision. Submitted and
+    # transformed text stay out of the audit log to avoid duplicating content.
+    compact_variants = [
+        {
+            "name": item["name"],
+            "model_score": item["model_score"],
+            "style_score": item["style_score"],
+            "combined_score": item["combined_score"],
+            "guess": item["guess"],
+        }
+        for item in analysis["variant_results"]
+    ]
+    audit.log_decision(
+        content_id=content_id,
+        creator_id=creator_id,
+        guess=analysis["final_guess"],
+        model_score=original["model_score"],
+        style_score=original["style_score"],
+        combined_score=original["combined_score"],
+        label=analysis["final_label"],
+        status="decided",
+        event="reliability_check",
+        original_guess=original["guess"],
+        stability=analysis["stability"],
+        score_range=analysis["score_range"],
+        label_changed=analysis["label_changed"],
+        max_signal_disagreement=analysis["max_signal_disagreement"],
+        human_review=analysis["human_review"],
+        reasons=analysis["reasons"],
+        variant_count=analysis["variant_count"],
+        variant_results=compact_variants,
+        latency_ms=latency_ms,
+    )
+
+    return jsonify({
+        "content_id": content_id,
+        "guess": analysis["final_guess"],
+        "label": analysis["final_label"],
+        "human_review": analysis["human_review"],
+        "stability": analysis["stability"],
+        "score_range": analysis["score_range"],
+        "label_changed": analysis["label_changed"],
+        "max_signal_disagreement": analysis["max_signal_disagreement"],
+        "reasons": analysis["reasons"],
+        "variant_count": analysis["variant_count"],
+        "original_result": original,
+        "variant_results": analysis["variant_results"],
+        "latency_ms": latency_ms,
     })
 
 
