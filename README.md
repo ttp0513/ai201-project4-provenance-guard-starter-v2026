@@ -727,6 +727,82 @@ accusations against real writers. The site would pay through more manual review
 and some missed AI text, rather than making a writer pay for an unreliable
 automated decision.
 
+---
+
+## Capstone
+
+### What This Extends
+
+Project 4 gives one `human`, `unsure`, or `ai` verdict from a model signal and a
+writing-style signal. Unit 8 showed that small edits can move those scores and
+that the two signals often disagree. The current response does not tell the
+reviewer whether its verdict is stable.
+
+The capstone adds a **Detector Reliability Guard**. It checks the same text in
+several mechanically normalized forms that preserve the words and intended
+meaning. It then reports whether the score and label remain stable. An unstable
+result is changed to `unsure` and sent to human review instead of being shown as
+a confident authorship decision.
+
+This does not make the underlying detector accurate. It adds evidence about
+when the detector should not trust its own answer.
+
+### The Shape
+
+**Shape C - Extend one capability.**
+
+I will add a `/reliability-check` route with this bounded workflow:
+
+1. Validate the text using the existing input rules.
+2. Score the original text with the existing two signals and combining rule.
+3. Create a small, fixed set of non-semantic variants, such as normalized
+   whitespace and standardized punctuation.
+4. Score every variant and calculate the combined-score range, label changes,
+   and disagreement between the two signals.
+5. Return the original result, each variant result, a stability assessment,
+   reason codes, and a `human_review` recommendation.
+6. Write one structured log entry containing the measured latency and
+   intermediate stability values.
+
+The existing `/submit` and `/appeal` routes will remain unchanged. A local test
+runner will exercise the reliability route repeatedly, preserve the structured
+results, and measure whether the guard reduces unstable non-`unsure` verdicts.
+
+### What Success Means
+
+Success does not mean perfect human-versus-AI classification. For this
+capstone, success means:
+
+- the new route runs from the documented command and records every run;
+- identical inputs produce identical variant sets and stability measurements;
+- a stable result remains unchanged;
+- a result that changes label across harmless variants becomes `unsure`;
+- the response explains which signal or variant caused the instability; and
+- the added latency is measured and reported honestly.
+
+Five numbered acceptance criteria with exact targets will be written in
+`criteria.md` before the capstone test results are produced.
+
+### What's Out of Scope
+
+- I am not training, fine-tuning, or replacing the GPT-2 model.
+- I am not claiming that predictability or writing style proves authorship.
+- I am not detecting bots, survey fraud, plagiarism, or individual AI-written
+  sentences.
+- I am not generating paraphrases with an external AI service. The variants
+  use deterministic local text normalization only.
+- I am not using the test results to accuse, reject, grade, ban, or penalize a
+  writer automatically.
+- I am not claiming production accuracy from the small capstone test set.
+
+### Why This Scope
+
+This extension follows directly from the failures already recorded in Project
+4. Edited text, punctuation changes, typos, and short inputs changed the two
+signals enough to create false positives and false negatives. The reliability
+guard will not hide those weaknesses. It will measure them and make the system
+more cautious when its evidence is unstable.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
