@@ -1,6 +1,6 @@
 # Capstone Criteria Run
 
-- Started: `20261116T010324Z`
+- Started: `20261116T011102Z`
 - Trials: `3`
 - Same scenarios per trial: `10`
 - System changes between trials: `none`
@@ -8,10 +8,10 @@
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 | --- | --- | --- | --- | --- | --- |
 | 1. Variants preserve wording | 15/15 cases | 5/5 | 5/5 | 5/5 | MET |
-| 2. Instability forces unsure | 3/3 reasons covered and 100% unstable cases handled in every trial | reasons 3/3; handling 7/7 | reasons 3/3; handling 7/7 | reasons 3/3; handling 7/7 | MET |
-| 3. Useful classifications remain | at least 3 stable and 1 stable non-unsure case per trial | stable 3; non-unsure 0 | stable 3; non-unsure 0 | stable 3; non-unsure 0 | MISSED |
+| 2. Instability forces unsure | 3/3 reasons covered and 100% unstable cases handled in every trial | reasons 3/3; handling 6/6 | reasons 3/3; handling 6/6 | reasons 3/3; handling 6/6 | MET |
+| 3. Useful classifications remain | at least 3 stable and 1 stable non-unsure case per trial | stable 4; non-unsure 1 | stable 4; non-unsure 1 | stable 4; non-unsure 1 | MET |
 | 4. Complete private audit entries | 30/30 complete entries with no text fields | 10/10 | 10/10 | 10/10 | MET |
-| 5. Warm latency and calls bounded | 30/30 under 500 ms with 1-4 calls matching variant count | 10/10; max 101.47 ms | 10/10; max 102.26 ms | 10/10; max 95.66 ms | MET |
+| 5. Warm latency and calls bounded | 30/30 under 500 ms with 1-4 calls matching variant count | 10/10; max 108.46 ms | 10/10; max 91.04 ms | 10/10; max 96.06 ms | MET |
 
 ## Actual Output From Run 1
 
@@ -56,12 +56,12 @@
 
 ```json
 {
-  "content_id": "54707d1b-e8fa-4485-847f-a111b3225aec",
+  "content_id": "485ce8a2-2ae7-47ec-af1c-2523a94d4665",
   "guess": "unsure",
   "human_review": true,
   "label": "The detector was not stable across the reliability checks, so this result needs human review.",
   "label_changed": true,
-  "latency_ms": 53.65,
+  "latency_ms": 82.57,
   "max_signal_disagreement": 0.1756,
   "model_calls": 2,
   "original_result": {
@@ -119,8 +119,8 @@
 ```json
 {
   "combined_score": 0.3905,
-  "content_id": "cbfccc0f-722a-4e3b-a695-7001c0653825",
-  "creator_id": "capstone_criteria_t1_case_01_plain_20261116T010324Z",
+  "content_id": "944dcaad-8219-4c31-b399-f105ba382c9f",
+  "creator_id": "capstone_criteria_t1_case_01_plain_20261116T011102Z",
   "event": "reliability_check",
   "guess": "unsure",
   "human_review": true,
@@ -129,7 +129,7 @@
   "input_words": 6,
   "label": "The detector was not stable across the reliability checks, so this result needs human review.",
   "label_changed": false,
-  "latency_ms": 23.85,
+  "latency_ms": 23.75,
   "max_signal_disagreement": 0.5191,
   "model_calls": 1,
   "model_score": 0.1309,
@@ -141,7 +141,7 @@
   "stability": "unstable",
   "status": "decided",
   "style_score": 0.65,
-  "timestamp": "2026-11-16T01:03:24+00:00",
+  "timestamp": "2026-11-16T01:12:40+00:00",
   "variant_count": 1,
   "variant_results": [
     {
@@ -160,7 +160,7 @@
 ```json
 {
   "case_id": "case_02_comma",
-  "latency_ms": 67.38,
+  "latency_ms": 64.37,
   "model_calls": 2,
   "variant_count": 2
 }

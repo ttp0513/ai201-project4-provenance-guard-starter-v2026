@@ -1,10 +1,10 @@
 {
-  "started_at": "20261116T010324Z",
+  "started_at": "20261116T011102Z",
   "base_url": "http://127.0.0.1:5000",
   "health_before_warmup": {
-    "detector_loaded": true,
+    "detector_loaded": false,
     "detector_model": "gpt2",
-    "log_entries": 393,
+    "log_entries": 424,
     "ok": true,
     "rate_limiting": true
   },
@@ -18,14 +18,14 @@
         {
           "case_id": "case_01_plain",
           "status_code": 200,
-          "wall_latency_ms": 28.57,
+          "wall_latency_ms": 28.84,
           "body": {
-            "content_id": "cbfccc0f-722a-4e3b-a695-7001c0653825",
+            "content_id": "944dcaad-8219-4c31-b399-f105ba382c9f",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 23.85,
+            "latency_ms": 23.75,
             "max_signal_disagreement": 0.5191,
             "model_calls": 1,
             "original_result": {
@@ -59,14 +59,14 @@
         {
           "case_id": "case_02_comma",
           "status_code": 200,
-          "wall_latency_ms": 72.28,
+          "wall_latency_ms": 69.59,
           "body": {
-            "content_id": "ba374df8-207a-434c-a536-916078845b6e",
+            "content_id": "085f3f96-46d5-44a6-9f89-54a0f0f934b8",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 67.38,
+            "latency_ms": 64.37,
             "max_signal_disagreement": 0.3427,
             "model_calls": 2,
             "original_result": {
@@ -109,14 +109,14 @@
         {
           "case_id": "case_03_unicode",
           "status_code": 200,
-          "wall_latency_ms": 106.55,
+          "wall_latency_ms": 113.11,
           "body": {
-            "content_id": "6d1b9923-b569-471a-9d92-9fd87a69b85a",
-            "guess": "unsure",
-            "human_review": true,
-            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "content_id": "864e91c4-6dd6-4bae-83ef-c5683d8305f0",
+            "guess": "human",
+            "human_review": false,
+            "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
             "label_changed": false,
-            "latency_ms": 101.47,
+            "latency_ms": 108.46,
             "max_signal_disagreement": 0.5782,
             "model_calls": 3,
             "original_result": {
@@ -129,10 +129,10 @@
               "text": "The editor called it “helpful”—although the first explanation was unclear."
             },
             "reasons": [
-              "signals_disagree"
+              "stable_across_variants"
             ],
             "score_range": 0.0332,
-            "stability": "unstable",
+            "stability": "stable",
             "variant_count": 3,
             "variant_results": [
               {
@@ -168,14 +168,14 @@
         {
           "case_id": "case_04_whitespace",
           "status_code": 200,
-          "wall_latency_ms": 57.91,
+          "wall_latency_ms": 102.07,
           "body": {
-            "content_id": "54707d1b-e8fa-4485-847f-a111b3225aec",
+            "content_id": "485ce8a2-2ae7-47ec-af1c-2523a94d4665",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 53.65,
+            "latency_ms": 82.57,
             "max_signal_disagreement": 0.1756,
             "model_calls": 2,
             "original_result": {
@@ -219,14 +219,14 @@
         {
           "case_id": "case_05_semicolon",
           "status_code": 200,
-          "wall_latency_ms": 75.68,
+          "wall_latency_ms": 73.17,
           "body": {
-            "content_id": "2361e946-6299-4e19-b21c-bb0b8923884b",
+            "content_id": "832cf2ce-faa0-4c60-a526-ba9fbb495c03",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 70.74,
+            "latency_ms": 68.93,
             "max_signal_disagreement": 0.4576,
             "model_calls": 2,
             "original_result": {
@@ -270,14 +270,14 @@
         {
           "case_id": "case_06_quotes",
           "status_code": 200,
-          "wall_latency_ms": 71.14,
+          "wall_latency_ms": 68.8,
           "body": {
-            "content_id": "9d14ea0b-a292-4665-9014-b5929cdb18b4",
+            "content_id": "2c19b7d3-1aa6-477c-b0bd-ead4021fa981",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 66.07,
+            "latency_ms": 64.36,
             "max_signal_disagreement": 0.2964,
             "model_calls": 2,
             "original_result": {
@@ -320,14 +320,14 @@
         {
           "case_id": "case_07_hyphen",
           "status_code": 200,
-          "wall_latency_ms": 65.65,
+          "wall_latency_ms": 73.68,
           "body": {
-            "content_id": "eb04292b-6afd-468c-b7db-550a75401b10",
+            "content_id": "9ed9b6b0-493c-47f0-aab5-38e135dfa77d",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 61.66,
+            "latency_ms": 67.62,
             "max_signal_disagreement": 0.4457,
             "model_calls": 2,
             "original_result": {
@@ -371,14 +371,14 @@
         {
           "case_id": "case_08_short",
           "status_code": 200,
-          "wall_latency_ms": 57.65,
+          "wall_latency_ms": 63.45,
           "body": {
-            "content_id": "8d037289-bcf4-43c2-9214-e6284fbb697d",
+            "content_id": "3e181ccd-eb3f-4198-a32e-1375ca049777",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 52.87,
+            "latency_ms": 58.17,
             "max_signal_disagreement": 0.5748,
             "model_calls": 2,
             "original_result": {
@@ -422,14 +422,14 @@
         {
           "case_id": "case_09_formal",
           "status_code": 200,
-          "wall_latency_ms": 39.8,
+          "wall_latency_ms": 43.56,
           "body": {
-            "content_id": "63bbc19e-6424-4b64-a444-d296d24550d9",
+            "content_id": "ed912c08-f60b-4b12-bfd4-c52b734e6e8c",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 34.82,
+            "latency_ms": 38.87,
             "max_signal_disagreement": 0.3648,
             "model_calls": 1,
             "original_result": {
@@ -463,14 +463,14 @@
         {
           "case_id": "case_10_informal",
           "status_code": 200,
-          "wall_latency_ms": 79.34,
+          "wall_latency_ms": 67.84,
           "body": {
-            "content_id": "aa97d569-b1af-473f-b454-99087d9517d2",
+            "content_id": "066b7c5e-78ab-4d97-ab89-97afbcc55a82",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 75.19,
+            "latency_ms": 63.5,
             "max_signal_disagreement": 0.1407,
             "model_calls": 2,
             "original_result": {
@@ -518,14 +518,14 @@
         {
           "case_id": "case_01_plain",
           "status_code": 200,
-          "wall_latency_ms": 31.29,
+          "wall_latency_ms": 38.11,
           "body": {
-            "content_id": "3ffe661d-3a07-4db9-9efa-bdaeb1f6a2e4",
+            "content_id": "ce696b52-96d2-44cf-b1d9-56d07ccf9b71",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 26.5,
+            "latency_ms": 32.39,
             "max_signal_disagreement": 0.5191,
             "model_calls": 1,
             "original_result": {
@@ -559,14 +559,14 @@
         {
           "case_id": "case_02_comma",
           "status_code": 200,
-          "wall_latency_ms": 73.83,
+          "wall_latency_ms": 70.09,
           "body": {
-            "content_id": "e732c4b9-746e-4538-a6a2-07a68cd51e0a",
+            "content_id": "3ef175d0-b7fb-45e0-8b15-85a9ff49583c",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 68.93,
+            "latency_ms": 65.97,
             "max_signal_disagreement": 0.3427,
             "model_calls": 2,
             "original_result": {
@@ -609,14 +609,14 @@
         {
           "case_id": "case_03_unicode",
           "status_code": 200,
-          "wall_latency_ms": 106.71,
+          "wall_latency_ms": 90.15,
           "body": {
-            "content_id": "5fe70fea-407c-4a44-a053-00d1ef5beb31",
-            "guess": "unsure",
-            "human_review": true,
-            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "content_id": "3b6aa6f9-834c-4b9a-8ff4-f8943cd70b2b",
+            "guess": "human",
+            "human_review": false,
+            "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
             "label_changed": false,
-            "latency_ms": 102.26,
+            "latency_ms": 86.15,
             "max_signal_disagreement": 0.5782,
             "model_calls": 3,
             "original_result": {
@@ -629,10 +629,10 @@
               "text": "The editor called it “helpful”—although the first explanation was unclear."
             },
             "reasons": [
-              "signals_disagree"
+              "stable_across_variants"
             ],
             "score_range": 0.0332,
-            "stability": "unstable",
+            "stability": "stable",
             "variant_count": 3,
             "variant_results": [
               {
@@ -668,14 +668,14 @@
         {
           "case_id": "case_04_whitespace",
           "status_code": 200,
-          "wall_latency_ms": 57.59,
+          "wall_latency_ms": 75.5,
           "body": {
-            "content_id": "b08468cc-56b0-4b26-a866-57d0f269c80b",
+            "content_id": "df2cb89e-ec18-44ae-9de2-245df945fd14",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 53.0,
+            "latency_ms": 70.49,
             "max_signal_disagreement": 0.1756,
             "model_calls": 2,
             "original_result": {
@@ -719,14 +719,14 @@
         {
           "case_id": "case_05_semicolon",
           "status_code": 200,
-          "wall_latency_ms": 71.32,
+          "wall_latency_ms": 66.62,
           "body": {
-            "content_id": "f0202c85-e91b-45af-b3d2-3eb57bf4724e",
+            "content_id": "5f4628a3-13ce-439c-982d-00cb55ad216c",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 66.75,
+            "latency_ms": 61.75,
             "max_signal_disagreement": 0.4576,
             "model_calls": 2,
             "original_result": {
@@ -770,14 +770,14 @@
         {
           "case_id": "case_06_quotes",
           "status_code": 200,
-          "wall_latency_ms": 68.0,
+          "wall_latency_ms": 74.55,
           "body": {
-            "content_id": "ee3e2368-0caa-4202-86fc-40b3c45bec79",
+            "content_id": "edb9a5bb-ec44-4f8a-86cd-701a11b940cf",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 63.67,
+            "latency_ms": 70.65,
             "max_signal_disagreement": 0.2964,
             "model_calls": 2,
             "original_result": {
@@ -820,14 +820,14 @@
         {
           "case_id": "case_07_hyphen",
           "status_code": 200,
-          "wall_latency_ms": 77.08,
+          "wall_latency_ms": 98.09,
           "body": {
-            "content_id": "6c3bf718-10e3-4d37-ba40-c74518369841",
+            "content_id": "9cd82c81-3833-47b7-aca4-eb14251d590a",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 73.04,
+            "latency_ms": 91.04,
             "max_signal_disagreement": 0.4457,
             "model_calls": 2,
             "original_result": {
@@ -871,14 +871,14 @@
         {
           "case_id": "case_08_short",
           "status_code": 200,
-          "wall_latency_ms": 53.24,
+          "wall_latency_ms": 62.89,
           "body": {
-            "content_id": "e2b18764-c467-4689-a638-80fff9c0a030",
+            "content_id": "7190a6bb-a91e-431d-ab82-f5de89c7616f",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 48.21,
+            "latency_ms": 57.84,
             "max_signal_disagreement": 0.5748,
             "model_calls": 2,
             "original_result": {
@@ -922,14 +922,14 @@
         {
           "case_id": "case_09_formal",
           "status_code": 200,
-          "wall_latency_ms": 41.13,
+          "wall_latency_ms": 39.81,
           "body": {
-            "content_id": "e10784ce-3087-4d71-9c0d-55768ea4f4e6",
+            "content_id": "a6c0d6a2-1619-4c6a-9625-bf03d8aef17a",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 36.53,
+            "latency_ms": 35.3,
             "max_signal_disagreement": 0.3648,
             "model_calls": 1,
             "original_result": {
@@ -963,14 +963,14 @@
         {
           "case_id": "case_10_informal",
           "status_code": 200,
-          "wall_latency_ms": 74.94,
+          "wall_latency_ms": 69.92,
           "body": {
-            "content_id": "0e5230ff-ff16-4693-a0d1-c0a4f9193f2d",
+            "content_id": "ff51a021-64ad-4fb3-b140-105b0e817709",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 70.68,
+            "latency_ms": 65.63,
             "max_signal_disagreement": 0.1407,
             "model_calls": 2,
             "original_result": {
@@ -1018,14 +1018,14 @@
         {
           "case_id": "case_01_plain",
           "status_code": 200,
-          "wall_latency_ms": 52.04,
+          "wall_latency_ms": 36.13,
           "body": {
-            "content_id": "4be9d9a2-7d94-4180-8608-a7eed8f32c70",
+            "content_id": "160ea90a-7edf-45ef-b50d-23bd51cbdef8",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 23.31,
+            "latency_ms": 31.37,
             "max_signal_disagreement": 0.5191,
             "model_calls": 1,
             "original_result": {
@@ -1059,14 +1059,14 @@
         {
           "case_id": "case_02_comma",
           "status_code": 200,
-          "wall_latency_ms": 70.88,
+          "wall_latency_ms": 70.23,
           "body": {
-            "content_id": "76b0ad76-f4ed-439b-879a-96f54af5f44b",
+            "content_id": "addee3a2-b237-425c-86dd-d2dce7d37149",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 66.13,
+            "latency_ms": 65.65,
             "max_signal_disagreement": 0.3427,
             "model_calls": 2,
             "original_result": {
@@ -1109,14 +1109,14 @@
         {
           "case_id": "case_03_unicode",
           "status_code": 200,
-          "wall_latency_ms": 99.87,
+          "wall_latency_ms": 100.62,
           "body": {
-            "content_id": "ab01325c-e885-4ef4-b443-e1e788433103",
-            "guess": "unsure",
-            "human_review": true,
-            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "content_id": "7e5a61c2-a5ef-43d7-bf37-7c4ccd469dc8",
+            "guess": "human",
+            "human_review": false,
+            "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
             "label_changed": false,
-            "latency_ms": 95.66,
+            "latency_ms": 96.06,
             "max_signal_disagreement": 0.5782,
             "model_calls": 3,
             "original_result": {
@@ -1129,10 +1129,10 @@
               "text": "The editor called it “helpful”—although the first explanation was unclear."
             },
             "reasons": [
-              "signals_disagree"
+              "stable_across_variants"
             ],
             "score_range": 0.0332,
-            "stability": "unstable",
+            "stability": "stable",
             "variant_count": 3,
             "variant_results": [
               {
@@ -1168,14 +1168,14 @@
         {
           "case_id": "case_04_whitespace",
           "status_code": 200,
-          "wall_latency_ms": 64.18,
+          "wall_latency_ms": 59.31,
           "body": {
-            "content_id": "4051ef5d-56c9-4a15-b6f6-151b59a4182e",
+            "content_id": "86cc4e8d-de21-4533-a2cd-07020aea646d",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 60.21,
+            "latency_ms": 54.92,
             "max_signal_disagreement": 0.1756,
             "model_calls": 2,
             "original_result": {
@@ -1219,14 +1219,14 @@
         {
           "case_id": "case_05_semicolon",
           "status_code": 200,
-          "wall_latency_ms": 65.64,
+          "wall_latency_ms": 86.84,
           "body": {
-            "content_id": "e3f5685f-5b76-42f0-9583-98c6e83535d3",
+            "content_id": "6fdcb401-b4dc-45ba-8230-3e1f60368356",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 61.21,
+            "latency_ms": 80.98,
             "max_signal_disagreement": 0.4576,
             "model_calls": 2,
             "original_result": {
@@ -1270,14 +1270,14 @@
         {
           "case_id": "case_06_quotes",
           "status_code": 200,
-          "wall_latency_ms": 77.55,
+          "wall_latency_ms": 72.42,
           "body": {
-            "content_id": "5ab87c62-0a80-43a7-be4f-7995fb77594a",
+            "content_id": "ad376458-85a9-49c5-a0cf-2d29ea82128e",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 72.44,
+            "latency_ms": 67.78,
             "max_signal_disagreement": 0.2964,
             "model_calls": 2,
             "original_result": {
@@ -1320,14 +1320,14 @@
         {
           "case_id": "case_07_hyphen",
           "status_code": 200,
-          "wall_latency_ms": 72.56,
+          "wall_latency_ms": 63.48,
           "body": {
-            "content_id": "b9d6ca8e-e1c9-49be-94c0-9155a9eff948",
+            "content_id": "1f7c874f-8e02-494a-acd0-3f820ff62a0a",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 67.75,
+            "latency_ms": 59.35,
             "max_signal_disagreement": 0.4457,
             "model_calls": 2,
             "original_result": {
@@ -1371,14 +1371,14 @@
         {
           "case_id": "case_08_short",
           "status_code": 200,
-          "wall_latency_ms": 50.02,
+          "wall_latency_ms": 63.97,
           "body": {
-            "content_id": "5ec26bc2-c24c-4b50-82ea-342a8d5abe2f",
+            "content_id": "787a534e-1ab2-427d-ab75-a158522a064f",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": true,
-            "latency_ms": 45.66,
+            "latency_ms": 59.19,
             "max_signal_disagreement": 0.5748,
             "model_calls": 2,
             "original_result": {
@@ -1422,14 +1422,14 @@
         {
           "case_id": "case_09_formal",
           "status_code": 200,
-          "wall_latency_ms": 41.35,
+          "wall_latency_ms": 41.17,
           "body": {
-            "content_id": "a7abd503-0bcb-4f0b-80fe-f7730c554fbb",
+            "content_id": "acf2cb65-5424-4474-8495-5b3e4e7079a1",
             "guess": "unsure",
             "human_review": true,
             "label": "The detector was not stable across the reliability checks, so this result needs human review.",
             "label_changed": false,
-            "latency_ms": 35.84,
+            "latency_ms": 37.04,
             "max_signal_disagreement": 0.3648,
             "model_calls": 1,
             "original_result": {
@@ -1463,14 +1463,14 @@
         {
           "case_id": "case_10_informal",
           "status_code": 200,
-          "wall_latency_ms": 78.22,
+          "wall_latency_ms": 71.42,
           "body": {
-            "content_id": "b6f168e6-5ca0-4fed-a99b-2d135627fa5a",
+            "content_id": "1cc26eb2-65d7-46fa-bb59-c31ed0b1f570",
             "guess": "unsure",
             "human_review": true,
             "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
             "label_changed": false,
-            "latency_ms": 73.68,
+            "latency_ms": 66.82,
             "max_signal_disagreement": 0.1407,
             "model_calls": 2,
             "original_result": {
@@ -1719,8 +1719,8 @@
             "signals_disagree"
           ],
           "coverage_count": 3,
-          "handled_cases": 7,
-          "unstable_cases": 7,
+          "handled_cases": 6,
+          "unstable_cases": 6,
           "examples": {
             "signals_disagree": "case_01_plain",
             "large_score_range": "case_04_whitespace",
@@ -1736,8 +1736,8 @@
             "signals_disagree"
           ],
           "coverage_count": 3,
-          "handled_cases": 7,
-          "unstable_cases": 7,
+          "handled_cases": 6,
+          "unstable_cases": 6,
           "examples": {
             "signals_disagree": "case_01_plain",
             "large_score_range": "case_04_whitespace",
@@ -1753,8 +1753,8 @@
             "signals_disagree"
           ],
           "coverage_count": 3,
-          "handled_cases": 7,
-          "unstable_cases": 7,
+          "handled_cases": 6,
+          "unstable_cases": 6,
           "examples": {
             "signals_disagree": "case_01_plain",
             "large_score_range": "case_04_whitespace",
@@ -1770,27 +1770,27 @@
       "trial_details": [
         {
           "trial": 1,
-          "stable_count": 3,
-          "stable_non_unsure_count": 0,
+          "stable_count": 4,
+          "stable_non_unsure_count": 1,
           "stable_guesses_preserved": true,
-          "passed": false
+          "passed": true
         },
         {
           "trial": 2,
-          "stable_count": 3,
-          "stable_non_unsure_count": 0,
+          "stable_count": 4,
+          "stable_non_unsure_count": 1,
           "stable_guesses_preserved": true,
-          "passed": false
+          "passed": true
         },
         {
           "trial": 3,
-          "stable_count": 3,
-          "stable_non_unsure_count": 0,
+          "stable_count": 4,
+          "stable_non_unsure_count": 1,
           "stable_guesses_preserved": true,
-          "passed": false
+          "passed": true
         }
       ],
-      "verdict": "MISSED"
+      "verdict": "MET"
     },
     "4": {
       "target": "30/30 complete entries with no text fields",
@@ -1823,29 +1823,29 @@
           "trial": 1,
           "passed": 10,
           "total": 10,
-          "average_latency_ms": 60.77,
-          "maximum_latency_ms": 101.47
+          "average_latency_ms": 64.06,
+          "maximum_latency_ms": 108.46
         },
         {
           "trial": 2,
           "passed": 10,
           "total": 10,
-          "average_latency_ms": 60.96,
-          "maximum_latency_ms": 102.26
+          "average_latency_ms": 63.72,
+          "maximum_latency_ms": 91.04
         },
         {
           "trial": 3,
           "passed": 10,
           "total": 10,
-          "average_latency_ms": 60.19,
-          "maximum_latency_ms": 95.66
+          "average_latency_ms": 61.92,
+          "maximum_latency_ms": 96.06
         }
       ],
       "total_passed": 30,
       "total": 30,
       "hosted_inference_api_calls": 0,
-      "average_latency_ms": 60.64,
-      "maximum_latency_ms": 102.26,
+      "average_latency_ms": 63.23,
+      "maximum_latency_ms": 108.46,
       "verdict": "MET"
     }
   }

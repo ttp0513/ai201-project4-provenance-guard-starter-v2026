@@ -1033,6 +1033,65 @@ change targets the mechanism that caused Criterion 3 to miss without changing
 the model, style signal, thresholds, variants, scenario texts, or other guard
 rules.
 
+### The Improvement and After Run
+
+I made only the change described above in
+`reliability.py::assess_results`. The before evidence was copied to the three
+`results/capstone_criteria_before_*` files. I then ran the same command, warm-up,
+10 scenarios, and three trials again. The after evidence is in the current
+`results/capstone_criteria_results.json`, `capstone_criteria_log.jsonl`, and
+`capstone_criteria_report.md` files.
+
+| Criterion | Before | After | Change |
+| --- | --- | --- | --- |
+| 1. Variants preserve wording | MET — 5/5 each trial | MET — 5/5 each trial | No regression |
+| 2. Instability forces unsure | MET — 3/3 reasons, 7/7 cases each trial | MET — 3/3 reasons, 6/6 cases each trial | Unanimous firm case no longer counted as unstable; all remaining instability still handled |
+| 3. Useful classifications remain | MISSED — 3 stable, 0 stable non-unsure each trial | MET — 4 stable, 1 stable non-unsure each trial | Improved |
+| 4. Complete private audit entries | MET — 10/10 each trial | MET — 10/10 each trial | No regression |
+| 5. Warm latency and calls bounded | MET — maximum 102.26 ms | MET — maximum 108.46 ms | Still below 500 ms |
+
+Actual after-run output for the case that caused Criterion 3 to miss:
+
+```json
+{
+  "content_id": "864e91c4-6dd6-4bae-83ef-c5683d8305f0",
+  "original_result": {
+    "guess": "human",
+    "combined_score": 0.309
+  },
+  "variant_count": 3,
+  "score_range": 0.0332,
+  "label_changed": false,
+  "max_signal_disagreement": 0.5782,
+  "stability": "stable",
+  "guess": "human",
+  "human_review": false,
+  "reasons": ["stable_across_variants"]
+}
+```
+
+### After-Run Verdicts and Diagnoses
+
+1. **Criterion 1 — MET.** Variant construction did not change, so all 15
+   wording-preservation and determinism checks still passed.
+2. **Criterion 2 — MET.** Each trial still exercised all three instability
+   reasons. The six cases per trial that met the revised instability policy all
+   returned `unsure` with human review and the correct reasons.
+3. **Criterion 3 — MET.** The Unicode-punctuation case kept `human` across all
+   three variants and had only `0.0332` score movement. The revised policy
+   preserved that firm consensus, raising stable coverage from three to four
+   cases and stable non-`unsure` coverage from zero to one in every trial.
+4. **Criterion 4 — MET.** The after run again produced 30 complete audit
+   entries without raw or transformed text.
+5. **Criterion 5 — MET.** Every warm request remained below 500 ms and every
+   model-call count still matched the unique variant count.
+
+The improvement helped the criterion it targeted and did not turn another
+criterion from MET to MISSED. The tradeoff is that a consistent firm label can
+now remain visible even when the two underlying signals disagree strongly. The
+numeric disagreement remains in the response and log so a reviewer can still
+see that limitation.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
