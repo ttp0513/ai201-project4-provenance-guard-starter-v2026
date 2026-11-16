@@ -1139,52 +1139,6 @@ writing backgrounds. I would do that before changing another threshold because
 the current 10 formatting scenarios can test reliability logic but cannot show
 whether the authorship classifications are accurate or fair.
 
-### How I Used AI
-
-I used ChatGPT/Codex throughout this capstone to explain the assignment, inspect
-the existing repository, draft code and tests, run the local service, analyze
-the structured results, and help write the documentation. I did not treat its
-first proposal as automatically correct; I reviewed the design, questioned the
-evidence, and changed direction when the proposed work moved away from the
-original text-classification system.
-
-Two specific moments changed the project:
-
-1. I asked whether the synthetic Qualtrics dataset was rewarding rules that I
-   had placed into the data myself. The AI agreed that the evaluation was
-   circular, and I rejected that direction instead of presenting an easy test
-   as evidence that bot detection worked.
-2. I asked for a practical extension of Project 4. The AI helped implement the
-   reliability guard and the three-trial evaluator. When Criterion 3 missed, I
-   used the recorded variant scores to limit the change to one disagreement
-   rule, then required the identical full test to run again before accepting
-   the improvement.
-
-The AI produced substantial code and draft text, so I am stating that directly.
-I checked its work by running 25 tests, the course environment check, a real
-10-case instrumentation session, and two complete 30-request criterion runs.
-The repository history preserves the abandoned scope, the criteria written
-before results, the miss, the diagnosis, the single improvement, and the
-after-run evidence.
-
-### Capstone Submission Checklist
-
-- [x] One existing system extended with one bounded capability
-- [x] Shape C, scope, and out-of-scope decisions documented
-- [x] Exact local start command and environment in `RUNNING.md`
-- [x] Structured logs with input, output, duration, and privacy controls
-- [x] Measured cost and 100-request arithmetic
-- [x] Five numbered criteria written before the criterion run
-- [x] Three trials per criterion with unchanged inputs
-- [x] Verdict and stage/mechanism diagnosis for every criterion
-- [x] One measured improvement with before and after evidence
-- [x] Remaining limitations and one prioritized next step
-- [x] Capstone-specific AI-use disclosure
-- [x] More than eight new capstone commits
-
-Repository URL:
-[https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026](https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026)
-
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
