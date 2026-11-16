@@ -149,3 +149,90 @@ confirms that the service remains available.
      A number you missed stays where it is, gets diagnosed, and gets a fix
      attempted. That's where the points are.
      ───────────────────────────────────────────────────────────────────────── -->
+
+---
+
+# Capstone Acceptance Criteria
+
+These criteria were written before running the capstone criteria tests. The
+Milestone 3 session proved that the route and logging worked, but it is not the
+evidence used to judge the targets below.
+
+Each criterion will run three times with the same unchanged inputs. IDs,
+timestamps, and latency naturally differ between requests, so they are not
+included when exact scoring output is compared.
+
+## 1. Text variants are deterministic and preserve the wording
+
+For five fixed texts containing ordinary spacing, extra whitespace, Unicode
+punctuation, and removable punctuation, all five must produce the same ordered
+variant names and variant text in each of three trials. Every variant must keep
+the same ordered Latin-word sequence as its original, and no request may score
+the same variant text twice. The target is 15 of 15 passing cases.
+
+**Why this target:**
+
+The reliability guard is supposed to test formatting sensitivity, not rewrite
+the writer's ideas. A changed word would make the comparison invalid, while a
+duplicate variant would add model cost without adding evidence. Deterministic
+variants also make a failure reproducible.
+
+## 2. Every observed instability produces an unsure result
+
+The fixed scenario set must exercise `label_changed`, `large_score_range`, and
+`signals_disagree` at least once in each trial. Every result containing any of
+those reasons must return `stability: unstable`, `guess: unsure`, and
+`human_review: true`. All triggered reasons must be written in the response.
+The target is 100% correct handling across all three trials.
+
+**Why this target:**
+
+The extension exists to stop a fragile score from becoming a firm authorship
+claim. Missing even one triggered instability path could allow the exact kind
+of overconfident decision the guard was added to prevent. Requiring all three
+reasons also tests more than one easy branch.
+
+## 3. The guard keeps some useful classifications
+
+Across the same 10 scenario texts, at least three must be marked `stable` in
+each trial, and at least one stable case must retain a final `human` or `ai`
+guess instead of `unsure`. For every stable result, the final guess must equal
+the original guess. The target must hold in all three trials.
+
+**Why this target:**
+
+A guard that sends every input to human review is safe but not useful. Three
+stable cases out of 10 is a minimum prototype coverage target, not an industry
+standard. Requiring at least one non-`unsure` result prevents the system from
+passing only because the original detector already returned `unsure` for
+everything.
+
+## 4. Every run is observable without storing the submitted text
+
+For each of the 10 scenarios in each trial, exactly one matching audit entry
+must be written. All 30 entries must contain the timestamp, content ID, creator
+ID, input SHA-256 hash, input character and word counts, original model and
+style scores, combined score, original and final guesses, stability, reason
+codes, variant count, model-call count, latency, label, and status. No entry may
+contain the submitted text or a transformed version of it.
+
+**Why this target:**
+
+I need enough information to reproduce and diagnose a decision, but copying a
+writer's full text into another file creates unnecessary privacy and retention
+risk. Missing entries would also make failed or suspicious runs invisible.
+
+## 5. Warm reliability checks finish with bounded local work
+
+After one unmeasured warm-up request loads GPT-2, each of the 10 scenarios must
+finish in less than 500 milliseconds in each of three trials. Every successful
+response must report between one and four model calls, and that number must
+equal its unique variant count. The target is 30 of 30 requests meeting both
+the latency and model-call limits, with zero hosted inference API calls.
+
+**Why this target:**
+
+The Milestone 3 warm requests finished well below 100 milliseconds on this
+machine, so 500 milliseconds allows normal local variation without hiding a
+model reload or repeated scoring. Bounding calls to the four designed variants
+also prevents an accidental loop from multiplying latency and compute cost.
