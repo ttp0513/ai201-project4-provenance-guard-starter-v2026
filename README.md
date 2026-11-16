@@ -861,6 +861,117 @@ request. No hosted API was called, so the measured hosted API charge was
 `$0.00`. The full table and arithmetic are in
 `results/capstone_milestone3_summary.md`.
 
+### Run Log and Verdicts
+
+I ran the same 10 scenarios three times without changing the code,
+configuration, thresholds, or inputs. The complete results are in
+`results/capstone_criteria_results.json`, the 30 matching audit entries are in
+`results/capstone_criteria_log.jsonl`, and the readable report is in
+`results/capstone_criteria_report.md`.
+
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| 1. Variants preserve wording | 15/15 cases | 5/5 | 5/5 | 5/5 | MET |
+| 2. Instability forces unsure | 3/3 reasons and every unstable case handled | 3/3; 7/7 | 3/3; 7/7 | 3/3; 7/7 | MET |
+| 3. Useful classifications remain | At least 3 stable and 1 stable non-unsure case | Stable 3; non-unsure 0 | Stable 3; non-unsure 0 | Stable 3; non-unsure 0 | MISSED |
+| 4. Complete private audit entries | 30/30 complete entries without text | 10/10 | 10/10 | 10/10 | MET |
+| 5. Warm latency and calls bounded | 30/30 below 500 ms with 1-4 calls | 10/10; max 101.47 ms | 10/10; max 102.26 ms | 10/10; max 95.66 ms | MET |
+
+The following is actual JSON produced during Run 1.
+
+#### Criterion 1 output
+
+```json
+{
+  "case_id": "case_03_unicode",
+  "variant_results": [
+    {
+      "name": "original",
+      "text": "The editor called it “helpful”—although the first explanation was unclear.",
+      "combined_score": 0.309,
+      "guess": "human"
+    },
+    {
+      "name": "standardized_punctuation",
+      "text": "The editor called it \"helpful\"-although the first explanation was unclear.",
+      "combined_score": 0.3422,
+      "guess": "human"
+    },
+    {
+      "name": "punctuation_light",
+      "text": "The editor called it helpful although the first explanation was unclear.",
+      "combined_score": 0.3348,
+      "guess": "human"
+    }
+  ]
+}
+```
+
+#### Criterion 2 output
+
+```json
+{
+  "content_id": "54707d1b-e8fa-4485-847f-a111b3225aec",
+  "guess": "unsure",
+  "human_review": true,
+  "label_changed": true,
+  "stability": "unstable",
+  "score_range": 0.1315,
+  "reasons": ["label_changed", "large_score_range"],
+  "variant_count": 2,
+  "model_calls": 2
+}
+```
+
+#### Criterion 3 output
+
+```json
+{
+  "case_id": "case_02_comma",
+  "stability": "stable",
+  "original_guess": "unsure",
+  "final_guess": "unsure"
+}
+```
+
+#### Criterion 4 output
+
+```json
+{
+  "timestamp": "2026-11-16T01:03:24+00:00",
+  "content_id": "cbfccc0f-722a-4e3b-a695-7001c0653825",
+  "creator_id": "capstone_criteria_t1_case_01_plain_20261116T010324Z",
+  "event": "reliability_check",
+  "input_sha256": "26b9d243aebc448d4e909b44dbf4c404fb9635d0ec9f21847a9842cad1cc1699",
+  "input_characters": 38,
+  "input_words": 6,
+  "model_score": 0.1309,
+  "style_score": 0.65,
+  "combined_score": 0.3905,
+  "original_guess": "unsure",
+  "guess": "unsure",
+  "stability": "unstable",
+  "reasons": ["signals_disagree"],
+  "model_calls": 1,
+  "latency_ms": 23.85,
+  "status": "decided"
+}
+```
+
+#### Criterion 5 output
+
+```json
+{
+  "case_id": "case_02_comma",
+  "latency_ms": 67.38,
+  "model_calls": 2,
+  "variant_count": 2
+}
+```
+
+`run_capstone_eval.py::main` sent the requests. The functions
+`evaluate_criterion_1` through `evaluate_criterion_5` calculated the verdicts.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7

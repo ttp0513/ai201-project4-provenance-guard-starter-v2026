@@ -1,0 +1,1852 @@
+{
+  "started_at": "20261116T010324Z",
+  "base_url": "http://127.0.0.1:5000",
+  "health_before_warmup": {
+    "detector_loaded": true,
+    "detector_model": "gpt2",
+    "log_entries": 393,
+    "ok": true,
+    "rate_limiting": true
+  },
+  "warmup_status": 200,
+  "trial_count": 3,
+  "case_count_per_trial": 10,
+  "trials": [
+    {
+      "trial": 1,
+      "responses": [
+        {
+          "case_id": "case_01_plain",
+          "status_code": 200,
+          "wall_latency_ms": 28.57,
+          "body": {
+            "content_id": "cbfccc0f-722a-4e3b-a695-7001c0653825",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 23.85,
+            "max_signal_disagreement": 0.5191,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.3905,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1309,
+              "name": "original",
+              "style_score": 0.65,
+              "text": "The service worked exactly as expected"
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.3905,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1309,
+                "name": "original",
+                "style_score": 0.65,
+                "text": "The service worked exactly as expected"
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_02_comma",
+          "status_code": 200,
+          "wall_latency_ms": 72.28,
+          "body": {
+            "content_id": "ba374df8-207a-434c-a536-916078845b6e",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 67.38,
+            "max_signal_disagreement": 0.3427,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5082,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4166,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "The checkout was quick, but the return instructions were difficult to find."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0548,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5082,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4166,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "The checkout was quick, but the return instructions were difficult to find."
+              },
+              {
+                "combined_score": 0.4534,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.282,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The checkout was quick but the return instructions were difficult to find."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_03_unicode",
+          "status_code": 200,
+          "wall_latency_ms": 106.55,
+          "body": {
+            "content_id": "6d1b9923-b569-471a-9d92-9fd87a69b85a",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 101.47,
+            "max_signal_disagreement": 0.5782,
+            "model_calls": 3,
+            "original_result": {
+              "combined_score": 0.309,
+              "guess": "human",
+              "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+              "model_score": 0.0695,
+              "name": "original",
+              "style_score": 0.5486,
+              "text": "The editor called it “helpful”—although the first explanation was unclear."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0332,
+            "stability": "unstable",
+            "variant_count": 3,
+            "variant_results": [
+              {
+                "combined_score": 0.309,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0695,
+                "name": "original",
+                "style_score": 0.5486,
+                "text": "The editor called it “helpful”—although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3422,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.1359,
+                "name": "standardized_punctuation",
+                "style_score": 0.5486,
+                "text": "The editor called it \"helpful\"-although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3348,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0457,
+                "name": "punctuation_light",
+                "style_score": 0.6239,
+                "text": "The editor called it helpful although the first explanation was unclear."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_04_whitespace",
+          "status_code": 200,
+          "wall_latency_ms": 57.91,
+          "body": {
+            "content_id": "54707d1b-e8fa-4485-847f-a111b3225aec",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 53.65,
+            "max_signal_disagreement": 0.1756,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.45,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5378,
+              "name": "original",
+              "style_score": 0.3622,
+              "text": "Customer support answered quickly.\n\nThe second response was more useful."
+            },
+            "reasons": [
+              "label_changed",
+              "large_score_range"
+            ],
+            "score_range": 0.1315,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.45,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5378,
+                "name": "original",
+                "style_score": 0.3622,
+                "text": "Customer support answered quickly.\n\nThe second response was more useful."
+              },
+              {
+                "combined_score": 0.3185,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.2754,
+                "name": "normalized_whitespace",
+                "style_score": 0.3615,
+                "text": "Customer support answered quickly. The second response was more useful."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_05_semicolon",
+          "status_code": 200,
+          "wall_latency_ms": 75.68,
+          "body": {
+            "content_id": "2361e946-6299-4e19-b21c-bb0b8923884b",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 70.74,
+            "max_signal_disagreement": 0.4576,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5081,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4863,
+              "name": "original",
+              "style_score": 0.5298,
+              "text": "The product arrived on time; however, the package (and one label) was damaged."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1122,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5081,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4863,
+                "name": "original",
+                "style_score": 0.5298,
+                "text": "The product arrived on time; however, the package (and one label) was damaged."
+              },
+              {
+                "combined_score": 0.3959,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1671,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The product arrived on time however the package and one label was damaged."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_06_quotes",
+          "status_code": 200,
+          "wall_latency_ms": 71.14,
+          "body": {
+            "content_id": "9d14ea0b-a292-4665-9014-b5929cdb18b4",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 66.07,
+            "max_signal_disagreement": 0.2964,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.4741,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4339,
+              "name": "original",
+              "style_score": 0.5144,
+              "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0638,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.4741,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4339,
+                "name": "original",
+                "style_score": 0.5144,
+                "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+              },
+              {
+                "combined_score": 0.4103,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2621,
+                "name": "punctuation_light",
+                "style_score": 0.5585,
+                "text": "I don't agree with the message 'Everything was perfect ' because I waited an hour."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_07_hyphen",
+          "status_code": 200,
+          "wall_latency_ms": 65.65,
+          "body": {
+            "content_id": "eb04292b-6afd-468c-b7db-550a75401b10",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 61.66,
+            "max_signal_disagreement": 0.4457,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5171,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5028,
+              "name": "original",
+              "style_score": 0.5313,
+              "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1139,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5171,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5028,
+                "name": "original",
+                "style_score": 0.5313,
+                "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+              },
+              {
+                "combined_score": 0.4032,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1803,
+                "name": "punctuation_light",
+                "style_score": 0.626,
+                "text": "The self service page was easy to use but the confirmation email arrived late."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_08_short",
+          "status_code": 200,
+          "wall_latency_ms": 57.65,
+          "body": {
+            "content_id": "8d037289-bcf4-43c2-9214-e6284fbb697d",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 52.87,
+            "max_signal_disagreement": 0.5748,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.3557,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1953,
+              "name": "original",
+              "style_score": 0.5161,
+              "text": "Good service, slow delivery."
+            },
+            "reasons": [
+              "label_changed",
+              "signals_disagree"
+            ],
+            "score_range": 0.0625,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.3557,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1953,
+                "name": "original",
+                "style_score": 0.5161,
+                "text": "Good service, slow delivery."
+              },
+              {
+                "combined_score": 0.2932,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0058,
+                "name": "punctuation_light",
+                "style_score": 0.5806,
+                "text": "Good service slow delivery."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_09_formal",
+          "status_code": 200,
+          "wall_latency_ms": 39.8,
+          "body": {
+            "content_id": "63bbc19e-6424-4b64-a444-d296d24550d9",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 34.82,
+            "max_signal_disagreement": 0.3648,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.4485,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.2661,
+              "name": "original",
+              "style_score": 0.6309,
+              "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.4485,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2661,
+                "name": "original",
+                "style_score": 0.6309,
+                "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_10_informal",
+          "status_code": 200,
+          "wall_latency_ms": 79.34,
+          "body": {
+            "content_id": "aa97d569-b1af-473f-b454-99087d9517d2",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 75.19,
+            "max_signal_disagreement": 0.1407,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5902,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5805,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0358,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5902,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5805,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+              },
+              {
+                "combined_score": 0.5544,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.484,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "I liked it overall but the app was kinda confusing and I had to try twice."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "trial": 2,
+      "responses": [
+        {
+          "case_id": "case_01_plain",
+          "status_code": 200,
+          "wall_latency_ms": 31.29,
+          "body": {
+            "content_id": "3ffe661d-3a07-4db9-9efa-bdaeb1f6a2e4",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 26.5,
+            "max_signal_disagreement": 0.5191,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.3905,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1309,
+              "name": "original",
+              "style_score": 0.65,
+              "text": "The service worked exactly as expected"
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.3905,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1309,
+                "name": "original",
+                "style_score": 0.65,
+                "text": "The service worked exactly as expected"
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_02_comma",
+          "status_code": 200,
+          "wall_latency_ms": 73.83,
+          "body": {
+            "content_id": "e732c4b9-746e-4538-a6a2-07a68cd51e0a",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 68.93,
+            "max_signal_disagreement": 0.3427,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5082,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4166,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "The checkout was quick, but the return instructions were difficult to find."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0548,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5082,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4166,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "The checkout was quick, but the return instructions were difficult to find."
+              },
+              {
+                "combined_score": 0.4534,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.282,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The checkout was quick but the return instructions were difficult to find."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_03_unicode",
+          "status_code": 200,
+          "wall_latency_ms": 106.71,
+          "body": {
+            "content_id": "5fe70fea-407c-4a44-a053-00d1ef5beb31",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 102.26,
+            "max_signal_disagreement": 0.5782,
+            "model_calls": 3,
+            "original_result": {
+              "combined_score": 0.309,
+              "guess": "human",
+              "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+              "model_score": 0.0695,
+              "name": "original",
+              "style_score": 0.5486,
+              "text": "The editor called it “helpful”—although the first explanation was unclear."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0332,
+            "stability": "unstable",
+            "variant_count": 3,
+            "variant_results": [
+              {
+                "combined_score": 0.309,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0695,
+                "name": "original",
+                "style_score": 0.5486,
+                "text": "The editor called it “helpful”—although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3422,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.1359,
+                "name": "standardized_punctuation",
+                "style_score": 0.5486,
+                "text": "The editor called it \"helpful\"-although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3348,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0457,
+                "name": "punctuation_light",
+                "style_score": 0.6239,
+                "text": "The editor called it helpful although the first explanation was unclear."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_04_whitespace",
+          "status_code": 200,
+          "wall_latency_ms": 57.59,
+          "body": {
+            "content_id": "b08468cc-56b0-4b26-a866-57d0f269c80b",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 53.0,
+            "max_signal_disagreement": 0.1756,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.45,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5378,
+              "name": "original",
+              "style_score": 0.3622,
+              "text": "Customer support answered quickly.\n\nThe second response was more useful."
+            },
+            "reasons": [
+              "label_changed",
+              "large_score_range"
+            ],
+            "score_range": 0.1315,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.45,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5378,
+                "name": "original",
+                "style_score": 0.3622,
+                "text": "Customer support answered quickly.\n\nThe second response was more useful."
+              },
+              {
+                "combined_score": 0.3185,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.2754,
+                "name": "normalized_whitespace",
+                "style_score": 0.3615,
+                "text": "Customer support answered quickly. The second response was more useful."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_05_semicolon",
+          "status_code": 200,
+          "wall_latency_ms": 71.32,
+          "body": {
+            "content_id": "f0202c85-e91b-45af-b3d2-3eb57bf4724e",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 66.75,
+            "max_signal_disagreement": 0.4576,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5081,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4863,
+              "name": "original",
+              "style_score": 0.5298,
+              "text": "The product arrived on time; however, the package (and one label) was damaged."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1122,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5081,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4863,
+                "name": "original",
+                "style_score": 0.5298,
+                "text": "The product arrived on time; however, the package (and one label) was damaged."
+              },
+              {
+                "combined_score": 0.3959,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1671,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The product arrived on time however the package and one label was damaged."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_06_quotes",
+          "status_code": 200,
+          "wall_latency_ms": 68.0,
+          "body": {
+            "content_id": "ee3e2368-0caa-4202-86fc-40b3c45bec79",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 63.67,
+            "max_signal_disagreement": 0.2964,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.4741,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4339,
+              "name": "original",
+              "style_score": 0.5144,
+              "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0638,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.4741,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4339,
+                "name": "original",
+                "style_score": 0.5144,
+                "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+              },
+              {
+                "combined_score": 0.4103,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2621,
+                "name": "punctuation_light",
+                "style_score": 0.5585,
+                "text": "I don't agree with the message 'Everything was perfect ' because I waited an hour."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_07_hyphen",
+          "status_code": 200,
+          "wall_latency_ms": 77.08,
+          "body": {
+            "content_id": "6c3bf718-10e3-4d37-ba40-c74518369841",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 73.04,
+            "max_signal_disagreement": 0.4457,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5171,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5028,
+              "name": "original",
+              "style_score": 0.5313,
+              "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1139,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5171,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5028,
+                "name": "original",
+                "style_score": 0.5313,
+                "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+              },
+              {
+                "combined_score": 0.4032,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1803,
+                "name": "punctuation_light",
+                "style_score": 0.626,
+                "text": "The self service page was easy to use but the confirmation email arrived late."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_08_short",
+          "status_code": 200,
+          "wall_latency_ms": 53.24,
+          "body": {
+            "content_id": "e2b18764-c467-4689-a638-80fff9c0a030",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 48.21,
+            "max_signal_disagreement": 0.5748,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.3557,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1953,
+              "name": "original",
+              "style_score": 0.5161,
+              "text": "Good service, slow delivery."
+            },
+            "reasons": [
+              "label_changed",
+              "signals_disagree"
+            ],
+            "score_range": 0.0625,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.3557,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1953,
+                "name": "original",
+                "style_score": 0.5161,
+                "text": "Good service, slow delivery."
+              },
+              {
+                "combined_score": 0.2932,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0058,
+                "name": "punctuation_light",
+                "style_score": 0.5806,
+                "text": "Good service slow delivery."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_09_formal",
+          "status_code": 200,
+          "wall_latency_ms": 41.13,
+          "body": {
+            "content_id": "e10784ce-3087-4d71-9c0d-55768ea4f4e6",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 36.53,
+            "max_signal_disagreement": 0.3648,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.4485,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.2661,
+              "name": "original",
+              "style_score": 0.6309,
+              "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.4485,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2661,
+                "name": "original",
+                "style_score": 0.6309,
+                "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_10_informal",
+          "status_code": 200,
+          "wall_latency_ms": 74.94,
+          "body": {
+            "content_id": "0e5230ff-ff16-4693-a0d1-c0a4f9193f2d",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 70.68,
+            "max_signal_disagreement": 0.1407,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5902,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5805,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0358,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5902,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5805,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+              },
+              {
+                "combined_score": 0.5544,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.484,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "I liked it overall but the app was kinda confusing and I had to try twice."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "trial": 3,
+      "responses": [
+        {
+          "case_id": "case_01_plain",
+          "status_code": 200,
+          "wall_latency_ms": 52.04,
+          "body": {
+            "content_id": "4be9d9a2-7d94-4180-8608-a7eed8f32c70",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 23.31,
+            "max_signal_disagreement": 0.5191,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.3905,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1309,
+              "name": "original",
+              "style_score": 0.65,
+              "text": "The service worked exactly as expected"
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.3905,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1309,
+                "name": "original",
+                "style_score": 0.65,
+                "text": "The service worked exactly as expected"
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_02_comma",
+          "status_code": 200,
+          "wall_latency_ms": 70.88,
+          "body": {
+            "content_id": "76b0ad76-f4ed-439b-879a-96f54af5f44b",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 66.13,
+            "max_signal_disagreement": 0.3427,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5082,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4166,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "The checkout was quick, but the return instructions were difficult to find."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0548,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5082,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4166,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "The checkout was quick, but the return instructions were difficult to find."
+              },
+              {
+                "combined_score": 0.4534,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.282,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The checkout was quick but the return instructions were difficult to find."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_03_unicode",
+          "status_code": 200,
+          "wall_latency_ms": 99.87,
+          "body": {
+            "content_id": "ab01325c-e885-4ef4-b443-e1e788433103",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 95.66,
+            "max_signal_disagreement": 0.5782,
+            "model_calls": 3,
+            "original_result": {
+              "combined_score": 0.309,
+              "guess": "human",
+              "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+              "model_score": 0.0695,
+              "name": "original",
+              "style_score": 0.5486,
+              "text": "The editor called it “helpful”—although the first explanation was unclear."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0332,
+            "stability": "unstable",
+            "variant_count": 3,
+            "variant_results": [
+              {
+                "combined_score": 0.309,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0695,
+                "name": "original",
+                "style_score": 0.5486,
+                "text": "The editor called it “helpful”—although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3422,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.1359,
+                "name": "standardized_punctuation",
+                "style_score": 0.5486,
+                "text": "The editor called it \"helpful\"-although the first explanation was unclear."
+              },
+              {
+                "combined_score": 0.3348,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0457,
+                "name": "punctuation_light",
+                "style_score": 0.6239,
+                "text": "The editor called it helpful although the first explanation was unclear."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_04_whitespace",
+          "status_code": 200,
+          "wall_latency_ms": 64.18,
+          "body": {
+            "content_id": "4051ef5d-56c9-4a15-b6f6-151b59a4182e",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 60.21,
+            "max_signal_disagreement": 0.1756,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.45,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5378,
+              "name": "original",
+              "style_score": 0.3622,
+              "text": "Customer support answered quickly.\n\nThe second response was more useful."
+            },
+            "reasons": [
+              "label_changed",
+              "large_score_range"
+            ],
+            "score_range": 0.1315,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.45,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5378,
+                "name": "original",
+                "style_score": 0.3622,
+                "text": "Customer support answered quickly.\n\nThe second response was more useful."
+              },
+              {
+                "combined_score": 0.3185,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.2754,
+                "name": "normalized_whitespace",
+                "style_score": 0.3615,
+                "text": "Customer support answered quickly. The second response was more useful."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_05_semicolon",
+          "status_code": 200,
+          "wall_latency_ms": 65.64,
+          "body": {
+            "content_id": "e3f5685f-5b76-42f0-9583-98c6e83535d3",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 61.21,
+            "max_signal_disagreement": 0.4576,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5081,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4863,
+              "name": "original",
+              "style_score": 0.5298,
+              "text": "The product arrived on time; however, the package (and one label) was damaged."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1122,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5081,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4863,
+                "name": "original",
+                "style_score": 0.5298,
+                "text": "The product arrived on time; however, the package (and one label) was damaged."
+              },
+              {
+                "combined_score": 0.3959,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1671,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "The product arrived on time however the package and one label was damaged."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_06_quotes",
+          "status_code": 200,
+          "wall_latency_ms": 77.55,
+          "body": {
+            "content_id": "5ab87c62-0a80-43a7-be4f-7995fb77594a",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 72.44,
+            "max_signal_disagreement": 0.2964,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.4741,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.4339,
+              "name": "original",
+              "style_score": 0.5144,
+              "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0638,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.4741,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.4339,
+                "name": "original",
+                "style_score": 0.5144,
+                "text": "I don't agree with the message, 'Everything was perfect,' because I waited an hour."
+              },
+              {
+                "combined_score": 0.4103,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2621,
+                "name": "punctuation_light",
+                "style_score": 0.5585,
+                "text": "I don't agree with the message 'Everything was perfect ' because I waited an hour."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_07_hyphen",
+          "status_code": 200,
+          "wall_latency_ms": 72.56,
+          "body": {
+            "content_id": "b9d6ca8e-e1c9-49be-94c0-9155a9eff948",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 67.75,
+            "max_signal_disagreement": 0.4457,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5171,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5028,
+              "name": "original",
+              "style_score": 0.5313,
+              "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+            },
+            "reasons": [
+              "large_score_range",
+              "signals_disagree"
+            ],
+            "score_range": 0.1139,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5171,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5028,
+                "name": "original",
+                "style_score": 0.5313,
+                "text": "The self-service page was easy-to-use, but the confirmation email arrived late."
+              },
+              {
+                "combined_score": 0.4032,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1803,
+                "name": "punctuation_light",
+                "style_score": 0.626,
+                "text": "The self service page was easy to use but the confirmation email arrived late."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_08_short",
+          "status_code": 200,
+          "wall_latency_ms": 50.02,
+          "body": {
+            "content_id": "5ec26bc2-c24c-4b50-82ea-342a8d5abe2f",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": true,
+            "latency_ms": 45.66,
+            "max_signal_disagreement": 0.5748,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.3557,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.1953,
+              "name": "original",
+              "style_score": 0.5161,
+              "text": "Good service, slow delivery."
+            },
+            "reasons": [
+              "label_changed",
+              "signals_disagree"
+            ],
+            "score_range": 0.0625,
+            "stability": "unstable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.3557,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.1953,
+                "name": "original",
+                "style_score": 0.5161,
+                "text": "Good service, slow delivery."
+              },
+              {
+                "combined_score": 0.2932,
+                "guess": "human",
+                "label": "This writing appears likely to have been written by a person, but this result is not proof of authorship.",
+                "model_score": 0.0058,
+                "name": "punctuation_light",
+                "style_score": 0.5806,
+                "text": "Good service slow delivery."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_09_formal",
+          "status_code": 200,
+          "wall_latency_ms": 41.35,
+          "body": {
+            "content_id": "a7abd503-0bcb-4f0b-80fe-f7730c554fbb",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The detector was not stable across the reliability checks, so this result needs human review.",
+            "label_changed": false,
+            "latency_ms": 35.84,
+            "max_signal_disagreement": 0.3648,
+            "model_calls": 1,
+            "original_result": {
+              "combined_score": 0.4485,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.2661,
+              "name": "original",
+              "style_score": 0.6309,
+              "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+            },
+            "reasons": [
+              "signals_disagree"
+            ],
+            "score_range": 0.0,
+            "stability": "unstable",
+            "variant_count": 1,
+            "variant_results": [
+              {
+                "combined_score": 0.4485,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.2661,
+                "name": "original",
+                "style_score": 0.6309,
+                "text": "The revised procedure improved the clarity of the instructions and reduced unnecessary repetition."
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "case_10_informal",
+          "status_code": 200,
+          "wall_latency_ms": 78.22,
+          "body": {
+            "content_id": "b6f168e6-5ca0-4fed-a99b-2d135627fa5a",
+            "guess": "unsure",
+            "human_review": true,
+            "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+            "label_changed": false,
+            "latency_ms": 73.68,
+            "max_signal_disagreement": 0.1407,
+            "model_calls": 2,
+            "original_result": {
+              "combined_score": 0.5902,
+              "guess": "unsure",
+              "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+              "model_score": 0.5805,
+              "name": "original",
+              "style_score": 0.5999,
+              "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+            },
+            "reasons": [
+              "stable_across_variants"
+            ],
+            "score_range": 0.0358,
+            "stability": "stable",
+            "variant_count": 2,
+            "variant_results": [
+              {
+                "combined_score": 0.5902,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.5805,
+                "name": "original",
+                "style_score": 0.5999,
+                "text": "I liked it overall, but the app was kinda confusing and I had to try twice."
+              },
+              {
+                "combined_score": 0.5544,
+                "guess": "unsure",
+                "label": "The signals are inconclusive, so we cannot determine whether this writing was produced by a person or AI.",
+                "model_score": 0.484,
+                "name": "punctuation_light",
+                "style_score": 0.6247,
+                "text": "I liked it overall but the app was kinda confusing and I had to try twice."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "criteria": {
+    "1": {
+      "target": "15/15 cases",
+      "trial_details": [
+        {
+          "trial": 1,
+          "passed": 5,
+          "total": 5,
+          "cases": [
+            {
+              "case_id": "case_01_plain",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original"
+              ]
+            },
+            {
+              "case_id": "case_02_comma",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_03_unicode",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "standardized_punctuation",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_04_whitespace",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "normalized_whitespace"
+              ]
+            },
+            {
+              "case_id": "case_05_semicolon",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            }
+          ]
+        },
+        {
+          "trial": 2,
+          "passed": 5,
+          "total": 5,
+          "cases": [
+            {
+              "case_id": "case_01_plain",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original"
+              ]
+            },
+            {
+              "case_id": "case_02_comma",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_03_unicode",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "standardized_punctuation",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_04_whitespace",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "normalized_whitespace"
+              ]
+            },
+            {
+              "case_id": "case_05_semicolon",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            }
+          ]
+        },
+        {
+          "trial": 3,
+          "passed": 5,
+          "total": 5,
+          "cases": [
+            {
+              "case_id": "case_01_plain",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original"
+              ]
+            },
+            {
+              "case_id": "case_02_comma",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_03_unicode",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "standardized_punctuation",
+                "punctuation_light"
+              ]
+            },
+            {
+              "case_id": "case_04_whitespace",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "normalized_whitespace"
+              ]
+            },
+            {
+              "case_id": "case_05_semicolon",
+              "passed": true,
+              "wording_preserved": true,
+              "no_duplicates": true,
+              "deterministic": true,
+              "variant_names": [
+                "original",
+                "punctuation_light"
+              ]
+            }
+          ]
+        }
+      ],
+      "total_passed": 15,
+      "total": 15,
+      "verdict": "MET"
+    },
+    "2": {
+      "target": "3/3 reasons covered and 100% unstable cases handled in every trial",
+      "trial_details": [
+        {
+          "trial": 1,
+          "coverage": [
+            "label_changed",
+            "large_score_range",
+            "signals_disagree"
+          ],
+          "coverage_count": 3,
+          "handled_cases": 7,
+          "unstable_cases": 7,
+          "examples": {
+            "signals_disagree": "case_01_plain",
+            "large_score_range": "case_04_whitespace",
+            "label_changed": "case_04_whitespace"
+          },
+          "passed": true
+        },
+        {
+          "trial": 2,
+          "coverage": [
+            "label_changed",
+            "large_score_range",
+            "signals_disagree"
+          ],
+          "coverage_count": 3,
+          "handled_cases": 7,
+          "unstable_cases": 7,
+          "examples": {
+            "signals_disagree": "case_01_plain",
+            "large_score_range": "case_04_whitespace",
+            "label_changed": "case_04_whitespace"
+          },
+          "passed": true
+        },
+        {
+          "trial": 3,
+          "coverage": [
+            "label_changed",
+            "large_score_range",
+            "signals_disagree"
+          ],
+          "coverage_count": 3,
+          "handled_cases": 7,
+          "unstable_cases": 7,
+          "examples": {
+            "signals_disagree": "case_01_plain",
+            "large_score_range": "case_04_whitespace",
+            "label_changed": "case_04_whitespace"
+          },
+          "passed": true
+        }
+      ],
+      "verdict": "MET"
+    },
+    "3": {
+      "target": "at least 3 stable and 1 stable non-unsure case per trial",
+      "trial_details": [
+        {
+          "trial": 1,
+          "stable_count": 3,
+          "stable_non_unsure_count": 0,
+          "stable_guesses_preserved": true,
+          "passed": false
+        },
+        {
+          "trial": 2,
+          "stable_count": 3,
+          "stable_non_unsure_count": 0,
+          "stable_guesses_preserved": true,
+          "passed": false
+        },
+        {
+          "trial": 3,
+          "stable_count": 3,
+          "stable_non_unsure_count": 0,
+          "stable_guesses_preserved": true,
+          "passed": false
+        }
+      ],
+      "verdict": "MISSED"
+    },
+    "4": {
+      "target": "30/30 complete entries with no text fields",
+      "trial_details": [
+        {
+          "trial": 1,
+          "passed": 10,
+          "total": 10
+        },
+        {
+          "trial": 2,
+          "passed": 10,
+          "total": 10
+        },
+        {
+          "trial": 3,
+          "passed": 10,
+          "total": 10
+        }
+      ],
+      "matching_log_entries": 30,
+      "total_passed": 30,
+      "total": 30,
+      "verdict": "MET"
+    },
+    "5": {
+      "target": "30/30 under 500 ms with 1-4 calls matching variant count",
+      "trial_details": [
+        {
+          "trial": 1,
+          "passed": 10,
+          "total": 10,
+          "average_latency_ms": 60.77,
+          "maximum_latency_ms": 101.47
+        },
+        {
+          "trial": 2,
+          "passed": 10,
+          "total": 10,
+          "average_latency_ms": 60.96,
+          "maximum_latency_ms": 102.26
+        },
+        {
+          "trial": 3,
+          "passed": 10,
+          "total": 10,
+          "average_latency_ms": 60.19,
+          "maximum_latency_ms": 95.66
+        }
+      ],
+      "total_passed": 30,
+      "total": 30,
+      "hosted_inference_api_calls": 0,
+      "average_latency_ms": 60.64,
+      "maximum_latency_ms": 102.26,
+      "verdict": "MET"
+    }
+  }
+}
