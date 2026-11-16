@@ -167,6 +167,7 @@ It now returns the completed Project 4 classification.
 | `python run_calibration.py --offline` | Reuse the downloaded model without network checks |
 | `python run_calibration.py --limit 2` | Run a quick two-per-group calibration check |
 | `python run_reliability_session.py` | Run and save the ten-case capstone instrumentation session |
+| `python run_capstone_eval.py` | Run all five capstone criteria three times and save the evidence |
 | `python run_attacks.py --set <folder>` | The attack set — **unit 8** |
 | `python run_attacks.py --flood 15` | Push past your rate limit and print the status codes — **unit 8** |
 | `python run_eval.py --label before` | Your five criteria, three trials — **unit 8** |
