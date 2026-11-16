@@ -1139,6 +1139,54 @@ writing backgrounds. I would do that before changing another threshold because
 the current 10 formatting scenarios can test reliability logic but cannot show
 whether the authorship classifications are accurate or fair.
 
+### How I Used AI
+
+I used AI as a coding assistant and a guide, but I did not accept every answer
+as correct. I used it to help me understand unfamiliar code, break the capstone
+requirements into smaller tasks, draft functions, and find which files needed
+to change. I then read the suggested code line by line, asked follow-up
+questions when I did not understand a decision, and ran the code myself before
+keeping it.
+
+**Moment 1 - Building the reliability check**
+
+- **What I asked for:** I asked AI how I could extend the original detector
+  without training another model or changing the existing `/submit` route. I
+  also asked for beginner-friendly code comments so I could follow how the new
+  parts connected.
+- **What came back:** AI suggested testing the same writing in several
+  formatting variants and comparing the labels, combined-score range, and
+  disagreement between the two signals. It also helped draft the separate
+  `reliability.py` module and the `/reliability-check` route.
+- **What I changed or verified:** I kept the variants deterministic and limited
+  them to whitespace and punctuation so they would not rewrite the person's
+  ideas. I removed duplicate variants to avoid unnecessary model calls. I also
+  checked the response and audit log myself and made sure the log stored an
+  input hash and measurements instead of copying the submitted writing.
+
+**Moment 2 - Testing and correcting an AI suggestion**
+
+- **What I asked for:** I asked AI to help turn my five criteria into a runner
+  that could send the same 10 scenarios through the service three times and
+  save the real outputs.
+- **What came back:** AI helped draft the evaluator and initially supported a
+  rule that treated large disagreement between the model and style signals as
+  instability in every case.
+- **What I changed or verified:** I did not assume that rule was correct. The
+  first run passed four criteria but missed the useful-classification
+  criterion. I inspected the individual signal scores and found a case where
+  all formatting variants remained `human` with only `0.0332` score movement,
+  but the disagreement rule still changed the result to `unsure`. I revised
+  only that rule, reran the same scenarios, and compared the before and after
+  evidence. All five criteria then passed, while the disagreement value stayed
+  visible for reviewers.
+
+AI made coding and debugging faster, especially when I needed an example or an
+explanation of how files connected. My responsibility was deciding what fit the
+project, rejecting or changing suggestions that did not match the evidence,
+running the tests, and documenting the remaining limitations. I treated AI
+output as a draft to review, not as proof that the system worked.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
