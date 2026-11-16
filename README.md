@@ -972,6 +972,67 @@ The following is actual JSON produced during Run 1.
 `run_capstone_eval.py::main` sent the requests. The functions
 `evaluate_criterion_1` through `evaluate_criterion_5` calculated the verdicts.
 
+### Criteria Verdicts and Diagnoses — Before Improvement
+
+#### Criterion 1 — MET
+
+**Stage:** Variant generation in `reliability.py::make_variants`.
+
+**Mechanism:** All five checked inputs kept the same ordered words, duplicate
+variants were removed, and the same variant names and text appeared in all
+three trials. Each trial passed 5 of 5 cases, so the full result was 15 of 15.
+
+#### Criterion 2 — MET
+
+**Stage:** Reliability decision policy in `reliability.py::assess_results`.
+
+**Mechanism:** The evaluator independently calculated label changes, score
+ranges, and signal disagreement from the variant scores. Every trial exercised
+all three reasons, and all seven unstable cases per trial returned `unsure`,
+required human review, and included the triggered reason codes.
+
+#### Criterion 3 — MISSED
+
+**Stage:** Reliability decision policy after both signals were scored.
+
+**Mechanism:** Each trial had three stable cases, but all three original results
+were already `unsure`, so none supplied a usable `human` or `ai` result. The
+Unicode-punctuation case was the important failure: its original,
+standardized-punctuation, and punctuation-light variants all remained `human`
+with a score range of only `0.0332`. However, the guard changed the final result
+to `unsure` because the maximum model/style disagreement was `0.5782`. The
+blanket disagreement rule treated consistent firm labels as unstable and
+removed the only non-`unsure` result that could have met this criterion.
+
+#### Criterion 4 — MET
+
+**Stage:** Structured logging in `app.py::reliability_check` and `audit.py`.
+
+**Mechanism:** All 30 requests produced exactly one matching audit entry with
+the required input hash, counts, intermediate scores, output, reasons, call
+count, and latency. The recursive privacy check found no `text` field in any
+entry.
+
+#### Criterion 5 — MET
+
+**Stage:** Warm request execution and variant deduplication.
+
+**Mechanism:** All 30 measured requests completed below 500 ms. The slowest
+warm request was `102.26 ms`, and every response made between one and three
+model calls, exactly matching its number of unique variants. No hosted
+inference API was used.
+
+### Improvement Chosen
+
+I will change only the signal-disagreement rule. The system will continue to
+measure `max_signal_disagreement`, but disagreement alone will not mark a result
+unstable when every variant has the same firm `human` or `ai` label. Label
+changes and large score ranges will still force `unsure`, and disagreement will
+still force `unsure` when the variants are collectively inconclusive. This
+change targets the mechanism that caused Criterion 3 to miss without changing
+the model, style signal, thresholds, variants, scenario texts, or other guard
+rules.
+
 <!-- ═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST - unit 7
