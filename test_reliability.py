@@ -100,6 +100,18 @@ class ReliabilityAssessmentTests(unittest.TestCase):
         self.assertIn("signals_disagree", analysis["reasons"])
         self.assertTrue(analysis["human_review"])
 
+    def test_firm_label_consensus_is_not_overridden_by_disagreement(self):
+        analysis = reliability.analyze(
+            "Simple words only.",
+            lambda text: result(0.05, 0.55, 0.30, "human"),
+        )
+
+        self.assertEqual(analysis["max_signal_disagreement"], 0.5)
+        self.assertEqual(analysis["stability"], "stable")
+        self.assertEqual(analysis["final_guess"], "human")
+        self.assertEqual(analysis["reasons"], ["stable_across_variants"])
+        self.assertFalse(analysis["human_review"])
+
     def test_incomplete_scorer_result_fails_visibly(self):
         with self.assertRaisesRegex(ValueError, "style_score"):
             reliability.analyze(

@@ -141,7 +141,15 @@ def assess_results(variant_results: list[dict]) -> dict:
         reasons.append("label_changed")
     if score_range >= config.RELIABILITY_MAX_SCORE_RANGE:
         reasons.append("large_score_range")
-    if max_signal_disagreement >= config.RELIABILITY_MAX_SIGNAL_DISAGREEMENT:
+    # Improvement after the first capstone criteria run: disagreement between
+    # the two imperfect signals is still measured, but it is not instability
+    # by itself when every formatting variant keeps the same firm label. The
+    # score range and label-change rules continue to catch formatting drift.
+    firm_label_consensus = len(guesses) == 1 and guesses.issubset({"human", "ai"})
+    if (
+        max_signal_disagreement >= config.RELIABILITY_MAX_SIGNAL_DISAGREEMENT
+        and not firm_label_consensus
+    ):
         reasons.append("signals_disagree")
 
     unstable = bool(reasons)

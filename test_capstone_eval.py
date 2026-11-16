@@ -29,6 +29,20 @@ class CapstoneEvaluationTests(unittest.TestCase):
             {"label_changed", "large_score_range", "signals_disagree"},
         )
 
+    def test_firm_consensus_is_not_counted_as_signal_instability(self):
+        body = {
+            "variant_results": [
+                {
+                    "guess": "human",
+                    "combined_score": 0.30,
+                    "model_score": 0.05,
+                    "style_score": 0.55,
+                }
+            ]
+        }
+
+        self.assertEqual(capstone_eval.expected_instability_reasons(body), set())
+
     def test_nested_raw_text_field_is_detected(self):
         self.assertTrue(
             capstone_eval.contains_text_key(

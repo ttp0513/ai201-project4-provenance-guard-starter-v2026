@@ -75,7 +75,12 @@ def expected_instability_reasons(body: dict) -> set[str]:
         reasons.add("label_changed")
     if round(max(scores) - min(scores), 4) >= config.RELIABILITY_MAX_SCORE_RANGE:
         reasons.add("large_score_range")
-    if round(max(disagreements), 4) >= config.RELIABILITY_MAX_SIGNAL_DISAGREEMENT:
+    firm_label_consensus = len(guesses) == 1 and guesses.issubset({"human", "ai"})
+    if (
+        round(max(disagreements), 4)
+        >= config.RELIABILITY_MAX_SIGNAL_DISAGREEMENT
+        and not firm_label_consensus
+    ):
         reasons.add("signals_disagree")
     return reasons
 
