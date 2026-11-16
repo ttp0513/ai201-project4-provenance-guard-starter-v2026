@@ -861,6 +861,14 @@ request. No hosted API was called, so the measured hosted API charge was
 `$0.00`. The full table and arithmetic are in
 `results/capstone_milestone3_summary.md`.
 
+The final after-run average was `63.23 ms` and `1.9` local GPT-2 calls per
+request. For 100 people making one request each day, the warm processing time
+would be `63.23 ms × 100 = 6,323 ms`, or about `6.32 seconds` per day on this
+computer. If the service restarted once each day, adding the measured
+`100.93-second` cold start would make the total about `107.26 seconds`. Hosted
+inference would still cost `$0.00`; this measurement does not include the cost
+of the computer, electricity, maintenance, or human review.
+
 ### Run Log and Verdicts
 
 I ran the same 10 scenarios three times without changing the code,
@@ -1091,6 +1099,91 @@ criterion from MET to MISSED. The tradeoff is that a consistent firm label can
 now remain visible even when the two underlying signals disagree strongly. The
 numeric disagreement remains in the response and log so a reviewer can still
 see that limitation.
+
+### What's Still Broken
+
+All five after-run acceptance criteria were met, but that does not mean the
+system determines authorship accurately.
+
+- **The underlying classifier is still weak.** Nine of the 10 scenario texts
+  still ended as `unsure`. The reliability guard measures whether the existing
+  answer is stable; it does not make GPT-2 predictability or the handcrafted
+  style score into proof of authorship. I stopped because improving authorship
+  accuracy would require a documented calibration dataset and probably a
+  different model, which is a separate extension rather than the one scoped
+  for this capstone.
+- **The improvement adds a false-negative tradeoff.** The Unicode-punctuation
+  case now remains `human` even though the model and style signals differ by
+  `0.5782`. Unanimous labels across formatting variants are more useful, but
+  both signals could still be consistently wrong. I kept the disagreement
+  value visible instead of hiding that risk.
+- **The perturbations cover only formatting.** Whitespace and punctuation
+  normalization do not test paraphrasing, translated writing, AI-assisted
+  editing, or major revisions. Adding generated paraphrases would change the
+  meaning-preservation problem and would need separate provenance and tests.
+- **Short and multilingual writing remain poorly supported.** The style
+  measures become unstable on very short text, and the input policy requires
+  Latin-alphabet words because the local model is English-focused. A real
+  service would need language detection, multilingual models, and separate
+  calibration by language and text length.
+- **Cold start is too slow.** One real first request took `100.93 seconds`
+  because the model loader attempted online metadata checks before using its
+  cached files. Warm requests were fast, but a restarted service can make one
+  user wait far too long.
+
+### What I Would Do Next
+
+I would first build a provenance-documented, held-out calibration set covering
+human, AI-generated, and human-edited AI text across several lengths and
+writing backgrounds. I would do that before changing another threshold because
+the current 10 formatting scenarios can test reliability logic but cannot show
+whether the authorship classifications are accurate or fair.
+
+### How I Used AI
+
+I used ChatGPT/Codex throughout this capstone to explain the assignment, inspect
+the existing repository, draft code and tests, run the local service, analyze
+the structured results, and help write the documentation. I did not treat its
+first proposal as automatically correct; I reviewed the design, questioned the
+evidence, and changed direction when the proposed work moved away from the
+original text-classification system.
+
+Two specific moments changed the project:
+
+1. I asked whether the synthetic Qualtrics dataset was rewarding rules that I
+   had placed into the data myself. The AI agreed that the evaluation was
+   circular, and I rejected that direction instead of presenting an easy test
+   as evidence that bot detection worked.
+2. I asked for a practical extension of Project 4. The AI helped implement the
+   reliability guard and the three-trial evaluator. When Criterion 3 missed, I
+   used the recorded variant scores to limit the change to one disagreement
+   rule, then required the identical full test to run again before accepting
+   the improvement.
+
+The AI produced substantial code and draft text, so I am stating that directly.
+I checked its work by running 25 tests, the course environment check, a real
+10-case instrumentation session, and two complete 30-request criterion runs.
+The repository history preserves the abandoned scope, the criteria written
+before results, the miss, the diagnosis, the single improvement, and the
+after-run evidence.
+
+### Capstone Submission Checklist
+
+- [x] One existing system extended with one bounded capability
+- [x] Shape C, scope, and out-of-scope decisions documented
+- [x] Exact local start command and environment in `RUNNING.md`
+- [x] Structured logs with input, output, duration, and privacy controls
+- [x] Measured cost and 100-request arithmetic
+- [x] Five numbered criteria written before the criterion run
+- [x] Three trials per criterion with unchanged inputs
+- [x] Verdict and stage/mechanism diagnosis for every criterion
+- [x] One measured improvement with before and after evidence
+- [x] Remaining limitations and one prioritized next step
+- [x] Capstone-specific AI-use disclosure
+- [x] More than eight new capstone commits
+
+Repository URL:
+[https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026](https://github.com/ttp0513/ai201-project4-provenance-guard-starter-v2026)
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
